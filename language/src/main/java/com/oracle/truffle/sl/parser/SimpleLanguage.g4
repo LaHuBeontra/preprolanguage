@@ -128,14 +128,20 @@ IDENTIFIER
 s='('
                                                 { factory.startFunction($IDENTIFIER, $s); }
 (
-    IDENTIFIER                                  { factory.addFormalParameter($IDENTIFIER); }
+    TYPE IDENTIFIER                                  { factory.addFormalParameter($IDENTIFIER, $TYPE); }
     (
         ','
-        IDENTIFIER                              { factory.addFormalParameter($IDENTIFIER); }
+        TYPE IDENTIFIER                              { factory.addFormalParameter($IDENTIFIER, $TYPE); }
     )*
 )?
 ')'
+(
+    'returns'
+    TYPE                                        {factory.addReturnType($TYPE);}
+)?
+
 body=block[false]                               { factory.finishFunction($body.result); }
+
 ;
 
 
@@ -147,35 +153,56 @@ s='{'
 (
     statement[inLoop]                           { body.add($statement.result); }
 )*
+(
+    r='return'
+    expression                                      { factory.createReturn($r, $expression.result);}                   
+    ';'
+)?
 e='}'
-                                                { $result = factory.finishBlock(body, $s.getStartIndex(), $e.getStopIndex() - $s.getStartIndex() + 1); }
+                                                { $result = factory.finishBlock(body,  $s.getStartIndex(), $e.getStopIndex() - $s.getStartIndex() + 1); }
 ;
 
 
 statement [boolean inLoop] returns [SLStatementNode result]
 :
 (
-    while_statement                             { $result = $while_statement.result; }
+//    while_statement                             { $result = $while_statement.result; }
+//|
+//    b='break'                                   { if (inLoop) { $result = factory.createBreak($b); } else { SemErr($b, "break used outside of loop"); } }
+//    ';'
+//|
+//    c='continue'                                { if (inLoop) { $result = factory.createContinue($c); } else { SemErr($c, "continue used outside of loop"); } }
+//    ';'
+//|
+//    if_statement[inLoop]                        { $result = $if_statement.result; }
+//|
+//    return_statement                            { $result = $return_statement.result; }
 |
-    b='break'                                   { if (inLoop) { $result = factory.createBreak($b); } else { SemErr($b, "break used outside of loop"); } }
-    ';'
-|
-    c='continue'                                { if (inLoop) { $result = factory.createContinue($c); } else { SemErr($c, "continue used outside of loop"); } }
-    ';'
-|
-    if_statement[inLoop]                        { $result = $if_statement.result; }
-|
-    return_statement                            { $result = $return_statement.result; }
-|
-    expression ';'                              { $result = $expression.result; }
-|
+    arithmetic ';'                              { $result = $arithmetic.result; }
+|   
+    printStatement     ';'                      { $result = $printStatement.result; }
+|   
     d='debugger'                                { $result = factory.createDebugger($d); }
     ';'
 )
 ;
 
 
-while_statement returns [SLStatementNode result]
+printStatement returns [PrintStatementNode result]:
+'print'
+(
+    arithmetic                      { $result = factory.createPrint($arithmetic.result); }
+    | STRING_LITERAL                { $result = factory.createPrint($STRING_LITERAL.text.substring(1, $STRING_LITERAL.text.length() - 1)); } //cut off leading and trailing "
+)
+;
+
+throwStatement returns [ThrowStatementNode result]:
+'throw'
+(
+    STRING_LITERAL                { $result = factory.createThrow($STRING_LITERAL.text.substring(1, $STRING_LITERAL.text.length() - 1)); } //cut off leading and trailing "
+)
+;
+/*while_statement returns [SLStatementNode result]
 :
 w='while'
 '('
@@ -207,8 +234,8 @@ r='return'                                      { SLExpressionNode value = null;
 )?                                              { $result = factory.createReturn($r, value); }
 ';'
 ;
-
-
+*/
+/*
 expression returns [SLExpressionNode result]
 :
 logic_term                                      { $result = $logic_term.result; }
@@ -236,7 +263,7 @@ arithmetic                                      { $result = $arithmetic.result; 
     op=('<' | '<=' | '>' | '>=' | '==' | '!=' )
     arithmetic                                  { $result = factory.createBinary($op, $result, $arithmetic.result); }
 )?
-;
+;*/
 
 
 arithmetic returns [SLExpressionNode result]
@@ -253,7 +280,7 @@ term returns [SLExpressionNode result]
 :
 factor                                          { $result = $factor.result; }
 (
-    op=('*' | '/')
+    op=('*' | '/'| 'X' | '**'| '=='|'<=' | '>=' | '&&' | '||' |'<' |'>')
     factor                                      { $result = factory.createBinary($op, $result, $factor.result); }
 )*
 ;
@@ -269,12 +296,16 @@ factor returns [SLExpressionNode result]
                                                 { $result = factory.createRead(assignmentName); }
     )
 |
+    'exists' '(' IDENTIFIER ')'                 { $result = factory.createVariableExists($IDENTIFIER.text); }
+|
     STRING_LITERAL                              { $result = factory.createStringLiteral($STRING_LITERAL, true); }
 |
     NUMERIC_LITERAL                             { $result = factory.createNumericLiteral($NUMERIC_LITERAL); }
 |
+    throwStatement                              { $result = $throwStatement.result; }
+|
     s='('
-    expr=expression
+    expr=arithmetic
     e=')'                                       { $result = factory.createParenExpression($expr.result, $s.getStartIndex(), $e.getStopIndex() - $s.getStartIndex() + 1); }
 )
 ;
@@ -289,24 +320,24 @@ member_expression [SLExpressionNode r, SLExpressionNode assignmentReceiver, SLEx
                                                       receiver = factory.createRead(assignmentName);
                                                   } }
     (
-        expression                              { parameters.add($expression.result); }
+        arithmetic                              { parameters.add($arithmetic.result); }
         (
             ','
-            expression                          { parameters.add($expression.result); }
+            arithmetic                          { parameters.add($arithmetic.result); }
         )*
     )?
     e=')'
                                                 { $result = factory.createCall(receiver, parameters, $e); }
 |
     '='
-    expression                                  { if (assignmentName == null) {
-                                                      SemErr($expression.start, "invalid assignment target");
+    arithmetic                                  { if (assignmentName == null) {
+                                                      SemErr($arithmetic.start, "invalid assignment target");
                                                   } else if (assignmentReceiver == null) {
-                                                      $result = factory.createAssignment(assignmentName, $expression.result);
+                                                      $result = factory.createAssignment(assignmentName, $arithmetic.result);
                                                   } else {
-                                                      $result = factory.createWriteProperty(assignmentReceiver, assignmentName, $expression.result);
+                                                      $result = factory.createWriteProperty(assignmentReceiver, assignmentName, $arithmetic.result);
                                                   } }
-|
+/*|
     '.'                                         { if (receiver == null) {
                                                        receiver = factory.createRead(assignmentName);
                                                   } }
@@ -320,11 +351,11 @@ member_expression [SLExpressionNode r, SLExpressionNode assignmentReceiver, SLEx
     expression
                                                 { nestedAssignmentName = $expression.result;
                                                   $result = factory.createReadProperty(receiver, nestedAssignmentName); }
-    ']'
+    ']'*/
 )
-(
+/*(
     member_expression[$result, receiver, nestedAssignmentName] { $result = $member_expression.result; }
-)?
+)?*/
 ;
 
 // lexer
@@ -342,6 +373,7 @@ fragment BINARY_DIGIT : '0' | '1';
 fragment TAB : '\t';
 fragment STRING_CHAR : ~('"' | '\\' | '\r' | '\n');
 
+TYPE : 'vec3' | 'vec4' | 'mat' | 'mat3' | 'mat4' | 'scal' | 'const';
 IDENTIFIER : LETTER (LETTER | DIGIT)*;
 STRING_LITERAL : '"' STRING_CHAR* '"';
 NUMERIC_LITERAL : '0' | NON_ZERO_DIGIT DIGIT*;

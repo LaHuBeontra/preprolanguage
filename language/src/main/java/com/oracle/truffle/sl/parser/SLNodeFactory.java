@@ -68,6 +68,7 @@ import com.oracle.truffle.sl.nodes.controlflow.SLFunctionBodyNode;
 import com.oracle.truffle.sl.nodes.controlflow.SLIfNode;
 import com.oracle.truffle.sl.nodes.controlflow.SLReturnNode;
 import com.oracle.truffle.sl.nodes.controlflow.SLWhileNode;
+import com.oracle.truffle.sl.nodes.expression.PreProLazyMultiplicationNode;
 import com.oracle.truffle.sl.nodes.expression.SLAddNodeGen;
 import com.oracle.truffle.sl.nodes.expression.SLBigIntegerLiteralNode;
 import com.oracle.truffle.sl.nodes.expression.SLDivNodeGen;
@@ -128,6 +129,7 @@ public class SLNodeFactory {
     private String functionName;
     private int functionBodyStartPos; // includes parameter list
     private int parameterCount;
+    private Token returnType;
     private FrameDescriptor frameDescriptor;
     private List<SLStatementNode> methodNodes;
 
@@ -152,12 +154,15 @@ public class SLNodeFactory {
         assert parameterCount == 0;
         assert frameDescriptor == null;
         assert lexicalScope == null;
+        assert returnType == null;
+        
 
         functionStartPos = nameToken.getStartIndex();
         functionName = nameToken.getText();
         functionBodyStartPos = bodyStartToken.getStartIndex();
         frameDescriptor = new FrameDescriptor();
         methodNodes = new ArrayList<>();
+        
         startBlock();
     }
 
@@ -171,6 +176,9 @@ public class SLNodeFactory {
         SLExpressionNode assignment = createAssignment(createStringLiteral(nameToken, false), readArg, parameterCount);
         methodNodes.add(assignment);
         parameterCount++;
+    }
+    public void addReturnType(Token typeToken){
+        returnType = typeToken;
     }
 
     public void finishFunction(SLStatementNode bodyNode) {
@@ -327,8 +335,17 @@ public class SLNodeFactory {
     public SLStatementNode createReturn(Token t, SLExpressionNode valueNode) {
         final int start = t.getStartIndex();
         final int length = valueNode == null ? t.getText().length() : valueNode.getSourceEndIndex() - start;
-        final SLReturnNode returnNode = new SLReturnNode(valueNode);
+        final SLReturnNode returnNode = new SLReturnNode(valueNode);        
         returnNode.setSourceSection(start, length);
+        if(this.returnType == null){
+            if (valueNode != null) {
+                throw new RuntimeException("Function " + functionName + " must have NO return statement or specify the return type with \"<funtion>() returns <type>\"");
+            }
+        } else {
+            if (valueNode == null) {
+                throw new RuntimeException("Function " + functionName + " must have an return statement.");
+            }
+        }
         return returnNode;
     }
 
@@ -387,6 +404,11 @@ public class SLNodeFactory {
             case "||":
                 result = new SLLogicalOrNode(leftUnboxed, rightUnboxed);
                 break;
+            case "**":
+                result = new PreProLazyMultiplicationNode(leftUnboxed, rightUnboxed);
+            case "X":
+                result = new PreProCrossproductNode(leftUnboxed, rightUnboxed);
+           
             default:
                 throw new RuntimeException("unexpected operation: " + opToken.getText());
         }
