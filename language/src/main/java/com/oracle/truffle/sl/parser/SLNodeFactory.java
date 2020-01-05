@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.oracle.truffle.sl.PreProLanguage;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.Token;
 
@@ -56,7 +57,6 @@ import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
-import com.oracle.truffle.sl.SLLanguage;
 import com.oracle.truffle.sl.nodes.SLExpressionNode;
 import com.oracle.truffle.sl.nodes.SLRootNode;
 import com.oracle.truffle.sl.nodes.SLStatementNode;
@@ -68,7 +68,6 @@ import com.oracle.truffle.sl.nodes.controlflow.SLFunctionBodyNode;
 import com.oracle.truffle.sl.nodes.controlflow.SLIfNode;
 import com.oracle.truffle.sl.nodes.controlflow.SLReturnNode;
 import com.oracle.truffle.sl.nodes.controlflow.SLWhileNode;
-import com.oracle.truffle.sl.nodes.expression.PreProLazyMultiplicationNode;
 import com.oracle.truffle.sl.nodes.expression.SLAddNodeGen;
 import com.oracle.truffle.sl.nodes.expression.SLBigIntegerLiteralNode;
 import com.oracle.truffle.sl.nodes.expression.SLDivNodeGen;
@@ -135,9 +134,9 @@ public class SLNodeFactory {
 
     /* State while parsing a block. */
     private LexicalScope lexicalScope;
-    private final SLLanguage language;
+    private final PreProLanguage language;
 
-    public SLNodeFactory(SLLanguage language, Source source) {
+    public SLNodeFactory(PreProLanguage language, Source source) {
         this.language = language;
         this.source = source;
         this.allFunctions = new HashMap<>();

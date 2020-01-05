@@ -45,7 +45,7 @@ import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.NodeInfo;
-import com.oracle.truffle.sl.SLLanguage;
+import com.oracle.truffle.sl.PreProLanguage;
 import com.oracle.truffle.sl.nodes.SLExpressionNode;
 import com.oracle.truffle.sl.runtime.SLContext;
 import com.oracle.truffle.sl.runtime.SLFunction;
@@ -81,7 +81,7 @@ public final class SLFunctionLiteralNode extends SLExpressionNode {
             /* We are about to change a @CompilationFinal field. */
             CompilerDirectives.transferToInterpreterAndInvalidate();
             /* First execution of the node: lookup the function in the function registry. */
-            cachedFunction = lookupContextReference(SLLanguage.class).get().getFunctionRegistry().lookup(functionName, true);
+            cachedFunction = lookupContextReference(PreProLanguage.class).get().getFunctionRegistry().lookup(functionName, true);
         }
         return cachedFunction;
     }

@@ -41,7 +41,8 @@
 package com.oracle.truffle.sl.test;
 
 import com.oracle.truffle.api.Truffle;
-import com.oracle.truffle.sl.SLLanguage;
+import com.oracle.truffle.sl.PreProLanguage;
+
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.ProtectionDomain;
@@ -72,7 +73,7 @@ public class SLSeparatedClassLoadersTest {
         URL truffleURL = Truffle.class.getProtectionDomain().getCodeSource().getLocation();
         Assume.assumeNotNull(truffleURL);
 
-        URL slURL = SLLanguage.class.getProtectionDomain().getCodeSource().getLocation();
+        URL slURL = PreProLanguage.class.getProtectionDomain().getCodeSource().getLocation();
         Assume.assumeNotNull(slURL);
 
         ClassLoader parent = Engine.class.getClassLoader().getParent();

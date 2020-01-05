@@ -40,13 +40,6 @@
  */
 package com.oracle.truffle.sl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-
 import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.RootCallTarget;
@@ -108,6 +101,17 @@ import com.oracle.truffle.sl.runtime.SLContext;
 import com.oracle.truffle.sl.runtime.SLFunction;
 import com.oracle.truffle.sl.runtime.SLFunctionRegistry;
 import com.oracle.truffle.sl.runtime.SLNull;
+import com.oracle.truffle.sl.runtime.types.PreProConstant;
+import com.oracle.truffle.sl.runtime.types.PreProMatrix;
+import com.oracle.truffle.sl.runtime.types.PreProScalar;
+import com.oracle.truffle.sl.runtime.types.PreProVector;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * SL is a simple language to demonstrate and showcase features of Truffle. The implementation is as
@@ -190,17 +194,18 @@ import com.oracle.truffle.sl.runtime.SLNull;
  * variables.
  * </ul>
  */
-@TruffleLanguage.Registration(id = SLLanguage.ID, name = "SL", defaultMimeType = SLLanguage.MIME_TYPE, characterMimeTypes = SLLanguage.MIME_TYPE, contextPolicy = ContextPolicy.SHARED, fileTypeDetectors = SLFileDetector.class)
+@TruffleLanguage.Registration(id = PreProLanguage.ID, name = "SL", defaultMimeType = PreProLanguage.MIME_TYPE, characterMimeTypes = PreProLanguage.MIME_TYPE, contextPolicy = ContextPolicy.SHARED, fileTypeDetectors = SLFileDetector.class)
 @ProvidedTags({StandardTags.CallTag.class, StandardTags.StatementTag.class, StandardTags.RootTag.class, StandardTags.RootBodyTag.class, StandardTags.ExpressionTag.class,
-                DebuggerTags.AlwaysHalt.class})
-public final class SLLanguage extends TruffleLanguage<SLContext> {
+        DebuggerTags.AlwaysHalt.class})
+public final class PreProLanguage extends TruffleLanguage<SLContext> {
     public static volatile int counter;
 
-    public static final String ID = "sl";
-    public static final String MIME_TYPE = "application/x-sl";
+    public static final String ID = "prepro";
+    public static final String MIME_TYPE = "application/x-prepro";
 
-    public SLLanguage() {
-        counter++;
+    public PreProLanguage() {
+        int tempCounter = counter;
+        counter = tempCounter + 1;
     }
 
     @Override
@@ -275,7 +280,9 @@ public final class SLLanguage extends TruffleLanguage<SLContext> {
     protected boolean isObjectOfLanguage(Object object) {
         if (!(object instanceof TruffleObject)) {
             return false;
-        } else if (object instanceof SLBigNumber || object instanceof SLFunction || object instanceof SLNull) {
+        } else if (object instanceof PreProConstant || object instanceof PreProScalar
+                || object instanceof PreProMatrix || object instanceof PreProVector
+                || object instanceof SLFunction) {
             return true;
         } else if (SLContext.isSLObject(object)) {
             return true;
@@ -382,7 +389,7 @@ public final class SLLanguage extends TruffleLanguage<SLContext> {
                         }
                         Object functionObject = findFunctionObject();
                         Scope vscope = Scope.newBuilder(nextScope.getName(), nextScope.getVariables(frame)).node(nextScope.getNode()).arguments(nextScope.getArguments(frame)).rootInstance(
-                                        functionObject).build();
+                                functionObject).build();
                         previousScope = nextScope;
                         nextScope = null;
                         return vscope;
@@ -403,7 +410,7 @@ public final class SLLanguage extends TruffleLanguage<SLContext> {
     }
 
     public static SLContext getCurrentContext() {
-        return getCurrentContext(SLLanguage.class);
+        return getCurrentContext(PreProLanguage.class);
     }
 
     private static final List<NodeFactory<? extends SLBuiltinNode>> EXTERNAL_BUILTINS = Collections.synchronizedList(new ArrayList<>());

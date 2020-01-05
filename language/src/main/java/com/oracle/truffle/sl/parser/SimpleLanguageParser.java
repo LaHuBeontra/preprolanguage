@@ -50,20 +50,14 @@ import java.util.Map;
 
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.RootCallTarget;
-import com.oracle.truffle.sl.SLLanguage;
+import com.oracle.truffle.sl.PreProLanguage;
 import com.oracle.truffle.sl.nodes.SLExpressionNode;
-import com.oracle.truffle.sl.nodes.SLRootNode;
 import com.oracle.truffle.sl.nodes.SLStatementNode;
-import com.oracle.truffle.sl.parser.SLParseError;
 
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
-import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 @SuppressWarnings("all")
 public class SimpleLanguageParser extends Parser {
@@ -173,7 +167,7 @@ public class SimpleLanguageParser extends Parser {
 	    throw new SLParseError(source, line, col, length, String.format("Error(s) parsing script:%n" + location + message));
 	}
 
-	public static Map<String, RootCallTarget> parseSL(SLLanguage language, Source source) {
+	public static Map<String, RootCallTarget> parseSL(PreProLanguage language, Source source) {
 	    SimpleLanguageLexer lexer = new SimpleLanguageLexer(CharStreams.fromString(source.getCharacters().toString()));
 	    SimpleLanguageParser parser = new SimpleLanguageParser(new CommonTokenStream(lexer));
 	    lexer.removeErrorListeners();

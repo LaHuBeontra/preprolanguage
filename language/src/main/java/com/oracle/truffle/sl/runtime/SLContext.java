@@ -40,12 +40,6 @@
  */
 package com.oracle.truffle.sl.runtime;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.Collections;
-import java.util.List;
-
 import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
@@ -62,7 +56,7 @@ import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.object.Layout;
 import com.oracle.truffle.api.object.Shape;
 import com.oracle.truffle.api.source.Source;
-import com.oracle.truffle.sl.SLLanguage;
+import com.oracle.truffle.sl.PreProLanguage;
 import com.oracle.truffle.sl.builtins.SLBuiltinNode;
 import com.oracle.truffle.sl.builtins.SLDefineFunctionBuiltinFactory;
 import com.oracle.truffle.sl.builtins.SLEvalBuiltinFactory;
@@ -83,9 +77,19 @@ import com.oracle.truffle.sl.builtins.SLWrapPrimitiveBuiltinFactory;
 import com.oracle.truffle.sl.nodes.SLExpressionNode;
 import com.oracle.truffle.sl.nodes.SLRootNode;
 import com.oracle.truffle.sl.nodes.local.SLReadArgumentNode;
+import com.oracle.truffle.sl.runtime.types.PreProConstant;
+import com.oracle.truffle.sl.runtime.types.PreProMatrix;
+import com.oracle.truffle.sl.runtime.types.PreProScalar;
+import com.oracle.truffle.sl.runtime.types.PreProVector;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * The run-time state of SL during execution. The context is created by the {@link SLLanguage}. It
+ * The run-time state of PrePro during execution. The context is created by the {@link PreProLanguage}. It
  * is used, for example, by {@link SLBuiltinNode#getContext() builtin functions}.
  * <p>
  * It would be an error to have two different context instances during the execution of one script.
@@ -94,19 +98,19 @@ import com.oracle.truffle.sl.nodes.local.SLReadArgumentNode;
  */
 public final class SLContext {
 
-    private static final Source BUILTIN_SOURCE = Source.newBuilder(SLLanguage.ID, "", "SL builtin").build();
-    static final Layout LAYOUT = Layout.createLayout();
+    private static final Source BUILTIN_SOURCE = Source.newBuilder(PreProLanguage.ID, "", "PrePro builtin").build();
+    private static final Layout LAYOUT = Layout.createLayout();
 
     private final Env env;
     private final BufferedReader input;
     private final PrintWriter output;
     private final SLFunctionRegistry functionRegistry;
     private final Shape emptyShape;
-    private final SLLanguage language;
+    private final PreProLanguage language;
     private final AllocationReporter allocationReporter;
     private final Iterable<Scope> topScopes; // Cache the top scopes
 
-    public SLContext(SLLanguage language, TruffleLanguage.Env env, List<NodeFactory<? extends SLBuiltinNode>> externalBuiltins) {
+    public SLContext(PreProLanguage language, TruffleLanguage.Env env, List<NodeFactory<? extends SLBuiltinNode>> externalBuiltins) {
         this.env = env;
         this.input = new BufferedReader(new InputStreamReader(env.in()));
         this.output = new PrintWriter(env.out(), true);
@@ -160,6 +164,7 @@ public final class SLContext {
      * {@link SLBuiltinNode builtin implementation classes}.
      */
     private void installBuiltins() {
+        //TODO: Fix builtin functions for PrePro
         installBuiltin(SLReadlnBuiltinFactory.getInstance());
         installBuiltin(SLPrintlnBuiltinFactory.getInstance());
         installBuiltin(SLNanoTimeBuiltinFactory.getInstance());
@@ -231,7 +236,7 @@ public final class SLContext {
      * when they are first stored, i.e., the store triggers a shape change of the object.
      */
     public DynamicObject createObject(AllocationReporter reporter) {
-        DynamicObject object = null;
+        DynamicObject object;
         reporter.onEnter(null, 0, AllocationReporter.SIZE_UNKNOWN);
         object = emptyShape.newInstance();
         reporter.onReturnValue(object, 0, AllocationReporter.SIZE_UNKNOWN);
@@ -251,7 +256,8 @@ public final class SLContext {
      */
 
     public static Object fromForeignValue(Object a) {
-        if (a instanceof Long || a instanceof SLBigNumber || a instanceof String || a instanceof Boolean) {
+        if (a instanceof Double || a instanceof PreProConstant || a instanceof PreProScalar
+                || a instanceof PreProMatrix || a instanceof PreProVector) {
             return a;
         } else if (a instanceof Character) {
             return String.valueOf(a);
@@ -284,7 +290,7 @@ public final class SLContext {
     }
 
     public static SLContext getCurrent() {
-        return SLLanguage.getCurrentContext();
+        return PreProLanguage.getCurrentContext();
     }
 
 }

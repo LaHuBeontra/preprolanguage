@@ -48,7 +48,7 @@ import com.oracle.truffle.api.RootCallTarget;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.nodes.RootNode;
-import com.oracle.truffle.sl.SLLanguage;
+import com.oracle.truffle.sl.PreProLanguage;
 import com.oracle.truffle.sl.runtime.SLContext;
 import com.oracle.truffle.sl.runtime.SLNull;
 
@@ -70,7 +70,7 @@ public final class SLEvalRootNode extends RootNode {
 
     @Child private DirectCallNode mainCallNode;
 
-    public SLEvalRootNode(SLLanguage language, RootCallTarget rootFunction, Map<String, RootCallTarget> functions) {
+    public SLEvalRootNode(PreProLanguage language, RootCallTarget rootFunction, Map<String, RootCallTarget> functions) {
         super(language);
         this.functions = functions;
         this.mainCallNode = rootFunction != null ? DirectCallNode.create(rootFunction) : null;
@@ -102,7 +102,7 @@ public final class SLEvalRootNode extends RootNode {
         if (!registered) {
             /* Function registration is a slow-path operation that must not be compiled. */
             CompilerDirectives.transferToInterpreterAndInvalidate();
-            lookupContextReference(SLLanguage.class).get().getFunctionRegistry().register(functions);
+            lookupContextReference(PreProLanguage.class).get().getFunctionRegistry().register(functions);
             registered = true;
         }
 

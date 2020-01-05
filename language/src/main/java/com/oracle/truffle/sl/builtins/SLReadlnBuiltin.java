@@ -48,7 +48,7 @@ import com.oracle.truffle.api.dsl.CachedContext;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.nodes.NodeInfo;
 import com.oracle.truffle.sl.SLException;
-import com.oracle.truffle.sl.SLLanguage;
+import com.oracle.truffle.sl.PreProLanguage;
 import com.oracle.truffle.sl.runtime.SLContext;
 
 /**
@@ -58,7 +58,7 @@ import com.oracle.truffle.sl.runtime.SLContext;
 public abstract class SLReadlnBuiltin extends SLBuiltinNode {
 
     @Specialization
-    public String readln(@CachedContext(SLLanguage.class) SLContext context) {
+    public String readln(@CachedContext(PreProLanguage.class) SLContext context) {
         String result = doRead(context.getInput());
         if (result == null) {
             /*

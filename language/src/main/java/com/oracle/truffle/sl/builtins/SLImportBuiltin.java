@@ -48,7 +48,7 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.library.CachedLibrary;
 import com.oracle.truffle.api.nodes.NodeInfo;
 import com.oracle.truffle.sl.SLException;
-import com.oracle.truffle.sl.SLLanguage;
+import com.oracle.truffle.sl.PreProLanguage;
 import com.oracle.truffle.sl.runtime.SLContext;
 import com.oracle.truffle.sl.runtime.SLNull;
 
@@ -61,7 +61,7 @@ public abstract class SLImportBuiltin extends SLBuiltinNode {
     @Specialization
     public Object importSymbol(String symbol,
                     @CachedLibrary(limit = "3") InteropLibrary arrays,
-                    @CachedContext(SLLanguage.class) SLContext context) {
+                    @CachedContext(PreProLanguage.class) SLContext context) {
         try {
             return arrays.readMember(context.getPolyglotBindings(), symbol);
         } catch (UnsupportedMessageException | UnknownIdentifierException e) {
