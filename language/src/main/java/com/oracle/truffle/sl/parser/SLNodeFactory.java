@@ -404,11 +404,12 @@ public class SLNodeFactory {
             case "||":
                 result = new SLLogicalOrNode(leftUnboxed, rightUnboxed);
                 break;
-            case "**":
-                result = new PreProLazyMultiplicationNode(leftUnboxed, rightUnboxed);
-            case "X":
-                result = new PreProCrossproductNode(leftUnboxed, rightUnboxed);
-           
+//            case "**":
+//                result = new PreProLazyMultiplicationNode(leftUnboxed, rightUnboxed);
+//                break;
+//            case "X":
+//                result = new PreProCrossproductNode(leftUnboxed, rightUnboxed);
+//                break;
             default:
                 throw new RuntimeException("unexpected operation: " + opToken.getText());
         }
