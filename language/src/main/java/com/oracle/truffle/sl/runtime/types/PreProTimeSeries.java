@@ -1,13 +1,13 @@
-package com.oracle.truffle.sl.types;
+package com.oracle.truffle.sl.runtime.types;
 
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
-public abstract class Variable {
+public abstract class PreProTimeSeries {
 
     private final INDArray ndArray;
 
-    public Variable(INDArray ndArray) {
+    public PreProTimeSeries(INDArray ndArray) {
         this.ndArray = ndArray;
     }
 
@@ -19,43 +19,43 @@ public abstract class Variable {
         return ndArray.shape()[0];
     }
 
-    public Variable add(Variable right) {
+    public PreProTimeSeries add(PreProTimeSeries right) {
         throw new RuntimeException("Cannot add " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
     }
 
-    public Variable sub(Variable right) {
+    public PreProTimeSeries sub(PreProTimeSeries right) {
         throw new RuntimeException("Cannot subtract " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
     }
 
-    public Variable mul(Variable right) {
+    public PreProTimeSeries mul(PreProTimeSeries right) {
         throw new RuntimeException("Cannot multiply " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
     }
 
-    public Variable div(Variable right) {
+    public PreProTimeSeries div(PreProTimeSeries right) {
         throw new RuntimeException("Cannot divide " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
     }
 
-    public Scalar isEqualTo(Variable right) {
+    public PreProScalar isEqualTo(PreProTimeSeries right) {
         throw new RuntimeException("Cannot compare " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
     }
 
-    public Scalar isLessThan(Variable right) {
+    public PreProScalar isLessThan(PreProTimeSeries right) {
         throw new RuntimeException("Cannot compare " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
     }
 
-    public Scalar isLessOrEqualThan(Variable right) {
+    public PreProScalar isLessOrEqualThan(PreProTimeSeries right) {
         throw new RuntimeException("Cannot compare " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
     }
 
-    public Scalar isGreaterThan(Variable right) {
+    public PreProScalar isGreaterThan(PreProTimeSeries right) {
         throw new RuntimeException("Cannot compare " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
     }
 
-    public Scalar isGreaterOrEqualThan(Variable right) {
+    public PreProScalar isGreaterOrEqualThan(PreProTimeSeries right) {
         throw new RuntimeException("Cannot compare " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
     }
 
-    protected INDArray multiplyMatrixWithMatrix(Matrix left, Matrix right, int dimension) {
+    protected INDArray multiplyMatrixWithMatrix(PreProMatrix left, PreProMatrix right, int dimension) {
         INDArray result = Nd4j.create(left.getAmountTimeElements(), dimension, dimension);
         for (int i = 0; i < left.getAmountTimeElements(); i++) {
             result.putRow(i, left.getNdArray().getRow(i).mmul(right.getNdArray().getRow(i)));
@@ -63,7 +63,7 @@ public abstract class Variable {
         return result;
     }
 
-    protected INDArray multiplyMatrixWithVector(Matrix left, Vector right, int dimension) {
+    protected INDArray multiplyMatrixWithVector(PreProMatrix left, PreProVector right, int dimension) {
         INDArray result = Nd4j.create(left.getAmountTimeElements(), dimension);
         for (int i = 0; i < left.getAmountTimeElements(); i++) {
             INDArray leftValue = left.getNdArray().getRow(i);
@@ -76,12 +76,12 @@ public abstract class Variable {
         return result;
     }
 
-    protected INDArray multiplyMatrixWithScalar(Matrix left, Scalar right, int dimension) {
+    protected INDArray multiplyMatrixWithScalar(PreProMatrix left, PreProScalar right, int dimension) {
         INDArray result = Nd4j.create(left.getAmountTimeElements(), dimension, dimension);
         return multiplyValues(left.getNdArray(), right.getNdArray(), left.getAmountTimeElements(), result);
     }
 
-    protected INDArray multiplyVectorWithScalar(Vector left, Scalar right, int dimension) {
+    protected INDArray multiplyVectorWithScalar(PreProVector left, PreProScalar right, int dimension) {
         INDArray result = Nd4j.create(left.getAmountTimeElements(), dimension);
         return multiplyValues(left.getNdArray(), right.getNdArray(), left.getAmountTimeElements(), result);
     }

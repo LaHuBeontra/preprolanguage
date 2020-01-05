@@ -1,15 +1,15 @@
-package com.oracle.truffle.sl.types;
+package com.oracle.truffle.sl.runtime.types;
 
 import java.util.Arrays;
 
 public enum VariableType {
-    VEC3("vec3", Vector3.class),
-    VEC4("vec4", Vector4.class),
-    MAT("mat", Matrix.class),
-    MAT3("mat3", Matrix3.class),
-    MAT4("mat4", Matrix4.class),
-    SCAL("scal", Scalar.class),
-    CONSTANT("const", Constant.class);
+    VEC3("vec3", PreProVector3.class),
+    VEC4("vec4", PreProVector4.class),
+    MAT("mat", PreProMatrix.class),
+    MAT3("mat3", PreProMatrix3.class),
+    MAT4("mat4", PreProMatrix4.class),
+    SCAL("scal", PreProScalar.class),
+    CONSTANT("const", PreProConstant.class);
 
     private final String text;
     private final Class clazz;
