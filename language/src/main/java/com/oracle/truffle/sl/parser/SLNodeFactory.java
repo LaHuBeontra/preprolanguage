@@ -334,7 +334,7 @@ public class SLNodeFactory {
     public SLStatementNode createReturn(Token t, SLExpressionNode valueNode) {
         final int start = t.getStartIndex();
         final int length = valueNode == null ? t.getText().length() : valueNode.getSourceEndIndex() - start;
-        final SLReturnNode returnNode = new SLReturnNode(valueNode);        
+        final SLReturnNode returnNode = new SLReturnNode(valueNode);
         returnNode.setSourceSection(start, length);
         if(this.returnType == null){
             if (valueNode != null) {
