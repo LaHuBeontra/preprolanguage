@@ -48,7 +48,7 @@ import com.oracle.truffle.sl.SLException;
 import com.oracle.truffle.sl.nodes.SLExpressionNode;
 
 /**
- * Example of a simple unary node that uses type specialization. See {@link SLAddNode} for
+ * Example of a simple unary node that uses type specialization. See {@link PreProAddNode} for
  * information on specializations.
  */
 @NodeChild("valueNode")

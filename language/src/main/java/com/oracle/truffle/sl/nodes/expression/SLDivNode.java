@@ -49,7 +49,7 @@ import com.oracle.truffle.sl.nodes.SLBinaryNode;
 import com.oracle.truffle.sl.runtime.SLBigNumber;
 
 /**
- * This class is similar to the extensively documented {@link SLAddNode}. Divisions by 0 throw the
+ * This class is similar to the extensively documented {@link PreProAddNode}. Divisions by 0 throw the
  * same {@link ArithmeticException exception} as in Java, SL has no special handling for it to keep
  * the code simple.
  */

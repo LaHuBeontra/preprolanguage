@@ -49,7 +49,7 @@ import com.oracle.truffle.sl.nodes.SLBinaryNode;
 import com.oracle.truffle.sl.runtime.SLBigNumber;
 
 /**
- * This class is similar to the extensively documented {@link SLAddNode}. The only difference: the
+ * This class is similar to the extensively documented {@link PreProAddNode}. The only difference: the
  * specialized methods return {@code boolean} instead of the input types.
  */
 @NodeInfo(shortName = "<")

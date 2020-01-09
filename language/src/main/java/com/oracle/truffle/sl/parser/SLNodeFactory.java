@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.oracle.truffle.sl.PreProLanguage;
+import com.oracle.truffle.sl.nodes.expression.PreProAddNodeGen;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.Token;
 
@@ -68,7 +69,6 @@ import com.oracle.truffle.sl.nodes.controlflow.SLFunctionBodyNode;
 import com.oracle.truffle.sl.nodes.controlflow.SLIfNode;
 import com.oracle.truffle.sl.nodes.controlflow.SLReturnNode;
 import com.oracle.truffle.sl.nodes.controlflow.SLWhileNode;
-import com.oracle.truffle.sl.nodes.expression.SLAddNodeGen;
 import com.oracle.truffle.sl.nodes.expression.SLBigIntegerLiteralNode;
 import com.oracle.truffle.sl.nodes.expression.SLDivNodeGen;
 import com.oracle.truffle.sl.nodes.expression.SLEqualNodeGen;
@@ -368,7 +368,7 @@ public class SLNodeFactory {
         final SLExpressionNode result;
         switch (opToken.getText()) {
             case "+":
-                result = SLAddNodeGen.create(leftUnboxed, rightUnboxed);
+                result = PreProAddNodeGen.create(leftUnboxed, rightUnboxed);
                 break;
             case "*":
                 result = SLMulNodeGen.create(leftUnboxed, rightUnboxed);

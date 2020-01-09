@@ -75,7 +75,7 @@ import com.oracle.truffle.sl.nodes.controlflow.SLDebuggerNode;
 import com.oracle.truffle.sl.nodes.controlflow.SLIfNode;
 import com.oracle.truffle.sl.nodes.controlflow.SLReturnNode;
 import com.oracle.truffle.sl.nodes.controlflow.SLWhileNode;
-import com.oracle.truffle.sl.nodes.expression.SLAddNode;
+import com.oracle.truffle.sl.nodes.expression.PreProAddNode;
 import com.oracle.truffle.sl.nodes.expression.SLBigIntegerLiteralNode;
 import com.oracle.truffle.sl.nodes.expression.SLDivNode;
 import com.oracle.truffle.sl.nodes.expression.SLEqualNode;
@@ -147,7 +147,7 @@ import java.util.NoSuchElementException;
  * <ul>
  * <li>Literals for {@link SLBigIntegerLiteralNode numbers} , {@link SLStringLiteralNode strings},
  * and {@link SLFunctionLiteralNode functions}.
- * <li>Basic arithmetic, logical, and comparison operations: {@link SLAddNode +}, {@link SLSubNode
+ * <li>Basic arithmetic, logical, and comparison operations: {@link PreProAddNode +}, {@link SLSubNode
  * -}, {@link SLMulNode *}, {@link SLDivNode /}, {@link SLLogicalAndNode logical and},
  * {@link SLLogicalOrNode logical or}, {@link SLEqualNode ==}, !=, {@link SLLessThanNode &lt;},
  * {@link SLLessOrEqualNode &le;}, &gt;, &ge;.
