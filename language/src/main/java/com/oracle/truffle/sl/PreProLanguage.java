@@ -57,50 +57,50 @@ import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.nodes.RootNode;
-import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
-import com.oracle.truffle.sl.builtins.SLBuiltinNode;
-import com.oracle.truffle.sl.builtins.SLDefineFunctionBuiltin;
-import com.oracle.truffle.sl.builtins.SLNanoTimeBuiltin;
-import com.oracle.truffle.sl.builtins.SLPrintlnBuiltin;
-import com.oracle.truffle.sl.builtins.SLReadlnBuiltin;
-import com.oracle.truffle.sl.builtins.SLStackTraceBuiltin;
-import com.oracle.truffle.sl.nodes.SLEvalRootNode;
-import com.oracle.truffle.sl.nodes.SLTypes;
-import com.oracle.truffle.sl.nodes.controlflow.SLBlockNode;
-import com.oracle.truffle.sl.nodes.controlflow.SLBreakNode;
-import com.oracle.truffle.sl.nodes.controlflow.SLContinueNode;
-import com.oracle.truffle.sl.nodes.controlflow.SLDebuggerNode;
-import com.oracle.truffle.sl.nodes.controlflow.SLIfNode;
-import com.oracle.truffle.sl.nodes.controlflow.SLReturnNode;
-import com.oracle.truffle.sl.nodes.controlflow.SLWhileNode;
-import com.oracle.truffle.sl.nodes.expression.PreProAddNode;
-import com.oracle.truffle.sl.nodes.expression.SLBigIntegerLiteralNode;
-import com.oracle.truffle.sl.nodes.expression.SLDivNode;
-import com.oracle.truffle.sl.nodes.expression.SLEqualNode;
-import com.oracle.truffle.sl.nodes.expression.SLFunctionLiteralNode;
-import com.oracle.truffle.sl.nodes.expression.SLInvokeNode;
-import com.oracle.truffle.sl.nodes.expression.SLLessOrEqualNode;
-import com.oracle.truffle.sl.nodes.expression.SLLessThanNode;
-import com.oracle.truffle.sl.nodes.expression.SLLogicalAndNode;
-import com.oracle.truffle.sl.nodes.expression.SLLogicalOrNode;
-import com.oracle.truffle.sl.nodes.expression.SLMulNode;
-import com.oracle.truffle.sl.nodes.expression.SLReadPropertyNode;
-import com.oracle.truffle.sl.nodes.expression.SLStringLiteralNode;
-import com.oracle.truffle.sl.nodes.expression.SLSubNode;
-import com.oracle.truffle.sl.nodes.expression.SLWritePropertyNode;
-import com.oracle.truffle.sl.nodes.local.SLLexicalScope;
-import com.oracle.truffle.sl.nodes.local.SLReadLocalVariableNode;
-import com.oracle.truffle.sl.nodes.local.SLWriteLocalVariableNode;
-import com.oracle.truffle.sl.parser.SLNodeFactory;
-import com.oracle.truffle.sl.parser.SimpleLanguageLexer;
-import com.oracle.truffle.sl.parser.SimpleLanguageParser;
-import com.oracle.truffle.sl.runtime.SLBigNumber;
-import com.oracle.truffle.sl.runtime.SLContext;
-import com.oracle.truffle.sl.runtime.SLFunction;
-import com.oracle.truffle.sl.runtime.SLFunctionRegistry;
-import com.oracle.truffle.sl.runtime.SLNull;
+import com.oracle.truffle.sl.builtins.PreProBuiltinNode;
+import com.oracle.truffle.sl.builtins.PreProPrintBuiltin;
+import com.oracle.truffle.sl.nodes.PreProEvalRootNode;
+import com.oracle.truffle.sl.nodes.PreProTypes;
+import com.oracle.truffle.sl.nodes.controlflow.PreProBlockNode;
+import com.oracle.truffle.sl.nodes.controlflow.PreProDebuggerNode;
+import com.oracle.truffle.sl.nodes.controlflow.PreProReturnNode;
+import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProAddNode;
+import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProCrossProductNode;
+import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProDivNode;
+import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProEqualNode;
+import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProLazyMultiplicationNode;
+import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProLessOrEqualNode;
+import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProLessThanNode;
+import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProMulNode;
+import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProSubNode;
+import com.oracle.truffle.sl.nodes.expression.function.PreProFunctionLiteralNode;
+import com.oracle.truffle.sl.nodes.expression.function.PreProInvokeNode;
+import com.oracle.truffle.sl.nodes.expression.literal.PreProConstantLiteralNode;
+import com.oracle.truffle.sl.nodes.expression.literal.PreProDoubleLiteralNode;
+import com.oracle.truffle.sl.nodes.expression.literal.PreProMatrix3LiteralNode;
+import com.oracle.truffle.sl.nodes.expression.literal.PreProMatrix4LiteralNode;
+import com.oracle.truffle.sl.nodes.expression.literal.PreProMatrixLiteralNode;
+import com.oracle.truffle.sl.nodes.expression.literal.PreProScalarLiteralNode;
+import com.oracle.truffle.sl.nodes.expression.literal.PreProStringLiteralNode;
+import com.oracle.truffle.sl.nodes.expression.literal.PreProVector3LiteralNode;
+import com.oracle.truffle.sl.nodes.expression.literal.PreProVector4LiteralNode;
+import com.oracle.truffle.sl.nodes.expression.literal.PreProVectorLiteralNode;
+import com.oracle.truffle.sl.nodes.expression.logic.PreProLogicalAndNode;
+import com.oracle.truffle.sl.nodes.expression.logic.PreProLogicalOrNode;
+import com.oracle.truffle.sl.nodes.expression.object.PreProReadPropertyNode;
+import com.oracle.truffle.sl.nodes.expression.object.PreProWritePropertyNode;
+import com.oracle.truffle.sl.nodes.local.PreProLexicalScope;
+import com.oracle.truffle.sl.nodes.local.PreProReadLocalVariableNode;
+import com.oracle.truffle.sl.nodes.local.PreProWriteLocalVariableNode;
+import com.oracle.truffle.sl.parser.PreProLexer;
+import com.oracle.truffle.sl.parser.PreProNodeFactory;
+import com.oracle.truffle.sl.parser.PreProParser;
+import com.oracle.truffle.sl.runtime.PreProContext;
+import com.oracle.truffle.sl.runtime.PreProFunction;
+import com.oracle.truffle.sl.runtime.PreProFunctionRegistry;
+import com.oracle.truffle.sl.runtime.PreProNull;
 import com.oracle.truffle.sl.runtime.types.PreProConstant;
 import com.oracle.truffle.sl.runtime.types.PreProMatrix;
 import com.oracle.truffle.sl.runtime.types.PreProScalar;
@@ -114,90 +114,76 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
- * SL is a simple language to demonstrate and showcase features of Truffle. The implementation is as
- * simple and clean as possible in order to help understanding the ideas and concepts of Truffle.
- * The language has first class functions, and objects are key-value stores.
+ * The PrePro Language is designed to simplify calculations with time series.
  * <p>
- * SL is dynamically typed, i.e., there are no type names specified by the programmer. SL is
+ * PrePro is statically typed, i.e., type names of variables must be specified. PrePro is
  * strongly typed, i.e., there is no automatic conversion between types. If an operation is not
  * available for the types encountered at run time, a type error is reported and execution is
- * stopped. For example, {@code 4 - "2"} results in a type error because subtraction is only defined
- * for numbers.
+ * stopped. For example, {@code vec - mat} results in a type error because subtraction is not defined
+ * for time series with an unequal amount of data rows.
  *
  * <p>
  * <b>Types:</b>
  * <ul>
- * <li>Number: arbitrary precision integer numbers. The implementation uses the Java primitive type
- * {@code long} to represent numbers that fit into the 64 bit range, and {@link SLBigNumber} for
- * numbers that exceed the range. Using a primitive type such as {@code long} is crucial for
- * performance.
- * <li>Boolean: implemented as the Java primitive type {@code boolean}.
+ * <li>Time Series: most PrePro types are time series of values, represented as vectors or matrices.
+ * The "number" value {@link PreProConstant}, which is simply a time series of length 1, is transformed
+ * internally into the Java primitive {@code double} type for performance optimization.
+ * Boolean types are represented as {@link PreProConstant}s, 0 for false and 1 for true.
  * <li>String: implemented as the Java standard type {@link String}.
- * <li>Function: implementation type {@link SLFunction}.
- * <li>Object: efficient implementation using the object model provided by Truffle. The
- * implementation type of objects is a subclass of {@link DynamicObject}.
+ * <li>Function: implementation type {@link PreProFunction}.
  * <li>Null (with only one value {@code null}): implemented as the singleton
- * {@link SLNull#SINGLETON}.
+ * {@link PreProNull#SINGLETON}.
  * </ul>
- * The class {@link SLTypes} lists these types for the Truffle DSL, i.e., for type-specialized
+ * The class {@link PreProTypes} lists these types for the Truffle DSL, i.e., for type-specialized
  * operations that are specified using Truffle DSL annotations.
  *
  * <p>
  * <b>Language concepts:</b>
  * <ul>
- * <li>Literals for {@link SLBigIntegerLiteralNode numbers} , {@link SLStringLiteralNode strings},
- * and {@link SLFunctionLiteralNode functions}.
- * <li>Basic arithmetic, logical, and comparison operations: {@link PreProAddNode +}, {@link SLSubNode
- * -}, {@link SLMulNode *}, {@link SLDivNode /}, {@link SLLogicalAndNode logical and},
- * {@link SLLogicalOrNode logical or}, {@link SLEqualNode ==}, !=, {@link SLLessThanNode &lt;},
- * {@link SLLessOrEqualNode &le;}, &gt;, &ge;.
- * <li>Local variables: local variables must be defined (via a {@link SLWriteLocalVariableNode
- * write}) before they can be used (by a {@link SLReadLocalVariableNode read}). Local variables are
+ * <li>Literals for {@link PreProConstantLiteralNode numbers}, {@link PreProDoubleLiteralNode},
+ * {@link PreProMatrixLiteralNode}, {@link PreProMatrix3LiteralNode}, {@link PreProMatrix4LiteralNode},
+ * {@link PreProVectorLiteralNode}, {@link PreProVector3LiteralNode}, {@link PreProVector4LiteralNode},
+ * {@link PreProScalarLiteralNode}, {@link PreProStringLiteralNode strings}, and {@link PreProFunctionLiteralNode functions}.
+ * <li>Basic arithmetic, logical, and comparison operations: {@link PreProAddNode +}, {@link PreProSubNode
+ * -}, {@link PreProMulNode *}, {@link PreProDivNode /}, {@link PreProCrossProductNode X}, {@link PreProLogicalAndNode &&},
+ * {@link PreProLogicalOrNode ||}, {@link PreProLazyMultiplicationNode **}, {@link PreProEqualNode ==}, !=,
+ * {@link PreProLessThanNode &lt;}, {@link PreProLessOrEqualNode &le;}, &gt;, &ge;.
+ * <li>Local variables: local variables must be defined (via a {@link PreProWriteLocalVariableNode
+ * write}) before they can be used (by a {@link PreProReadLocalVariableNode read}). Local variables are
  * not visible outside of the block where they were first defined.
- * <li>Basic control flow statements: {@link SLBlockNode blocks}, {@link SLIfNode if},
- * {@link SLWhileNode while} with {@link SLBreakNode break} and {@link SLContinueNode continue},
- * {@link SLReturnNode return}.
- * <li>Debugging control: {@link SLDebuggerNode debugger} statement uses
- * {@link DebuggerTags#AlwaysHalt} tag to halt the execution when run under the debugger.
- * <li>Function calls: {@link SLInvokeNode invocations} are efficiently implemented with
- * {@link SLDispatchNode polymorphic inline caches}.
- * <li>Object access: {@link SLReadPropertyNode} uses {@link SLReadPropertyCacheNode} as the
- * polymorphic inline cache for property reads. {@link SLWritePropertyNode} uses
- * {@link SLWritePropertyCacheNode} as the polymorphic inline cache for property writes.
+ * <li>Basic control flow statements: {@link PreProBlockNode blocks} and {@link PreProReturnNode return}.
+ * <li>Debugging control: {@link PreProDebuggerNode debugger} statement uses
+ * {@link DebuggerTags.AlwaysHalt} tag to halt the execution when run under the debugger.
+ * <li>Function calls: {@link PreProInvokeNode invocations} are efficiently implemented with
+ * {@link PreProDispatchNode polymorphic inline caches}.
+ * <li>Object access: {@link PreProReadPropertyNode} uses {@link PreProReadPropertyCacheNode} as the
+ * polymorphic inline cache for property reads. {@link PreProWritePropertyNode} uses
+ * {@link PreProWritePropertyCacheNode} as the polymorphic inline cache for property writes.
  * </ul>
  *
  * <p>
  * <b>Syntax and parsing:</b><br>
- * The syntax is described as an attributed grammar. The {@link SimpleLanguageParser} and
- * {@link SimpleLanguageLexer} are automatically generated by ANTLR 4. The grammar contains semantic
+ * The syntax is described as an attributed grammar. The {@link PreProParser} and
+ * {@link PreProLexer} are automatically generated by ANTLR 4. The grammar contains semantic
  * actions that build the AST for a method. To keep these semantic actions short, they are mostly
- * calls to the {@link SLNodeFactory} that performs the actual node creation. All functions found in
- * the SL source are added to the {@link SLFunctionRegistry}, which is accessible from the
- * {@link SLContext}.
+ * calls to the {@link PreProNodeFactory} that performs the actual node creation. All functions found in
+ * the PrePro source are added to the {@link PreProFunctionRegistry}, which is accessible from the
+ * {@link PreProContext}.
  *
  * <p>
  * <b>Builtin functions:</b><br>
- * Library functions that are available to every SL source without prior definition are called
- * builtin functions. They are added to the {@link SLFunctionRegistry} when the {@link SLContext} is
+ * Library functions that are available to every PrePro source without prior definition are called
+ * builtin functions. They are added to the {@link PreProFunctionRegistry} when the {@link PreProContext} is
  * created. Some of the current builtin functions are
  * <ul>
- * <li>{@link SLReadlnBuiltin readln}: Read a String from the {@link SLContext#getInput() standard
- * input}.
- * <li>{@link SLPrintlnBuiltin println}: Write a value to the {@link SLContext#getOutput() standard
+ * <li>{@link PreProPrintBuiltin print}: Write a value to the {@link PreProContext#getOutput() standard
  * output}.
- * <li>{@link SLNanoTimeBuiltin nanoTime}: Returns the value of a high-resolution time, in
- * nanoseconds.
- * <li>{@link SLDefineFunctionBuiltin defineFunction}: Parses the functions provided as a String
- * argument and adds them to the function registry. Functions that are already defined are replaced
- * with the new version.
- * <li>{@link SLStackTraceBuiltin stckTrace}: Print all function activations with all local
- * variables.
  * </ul>
  */
-@TruffleLanguage.Registration(id = PreProLanguage.ID, name = "SL", defaultMimeType = PreProLanguage.MIME_TYPE, characterMimeTypes = PreProLanguage.MIME_TYPE, contextPolicy = ContextPolicy.SHARED, fileTypeDetectors = SLFileDetector.class)
+@TruffleLanguage.Registration(id = PreProLanguage.ID, name = "PrePro", defaultMimeType = PreProLanguage.MIME_TYPE, characterMimeTypes = PreProLanguage.MIME_TYPE, contextPolicy = ContextPolicy.SHARED, fileTypeDetectors = PreProFileDetector.class)
 @ProvidedTags({StandardTags.CallTag.class, StandardTags.StatementTag.class, StandardTags.RootTag.class, StandardTags.RootBodyTag.class, StandardTags.ExpressionTag.class,
         DebuggerTags.AlwaysHalt.class})
-public final class PreProLanguage extends TruffleLanguage<SLContext> {
+public final class PreProLanguage extends TruffleLanguage<PreProContext> {
     public static volatile int counter;
 
     public static final String ID = "prepro";
@@ -209,20 +195,20 @@ public final class PreProLanguage extends TruffleLanguage<SLContext> {
     }
 
     @Override
-    protected SLContext createContext(Env env) {
-        return new SLContext(this, env, new ArrayList<>(EXTERNAL_BUILTINS));
+    protected PreProContext createContext(Env env) {
+        return new PreProContext(this, env, new ArrayList<>(EXTERNAL_BUILTINS));
     }
 
     @Override
-    protected CallTarget parse(ParsingRequest request) throws Exception {
+    protected CallTarget parse(ParsingRequest request) {
         Source source = request.getSource();
         Map<String, RootCallTarget> functions;
         /*
-         * Parse the provided source. At this point, we do not have a SLContext yet. Registration of
-         * the functions with the SLContext happens lazily in SLEvalRootNode.
+         * Parse the provided source. At this point, we do not have a PreProContext yet. Registration of
+         * the functions with the PreProContext happens lazily in PreProEvalRootNode.
          */
         if (request.getArgumentNames().isEmpty()) {
-            functions = SimpleLanguageParser.parseSL(this, source);
+            functions = PreProParser.parsePrePro(this, source);
         } else {
             Source requestedSource = request.getSource();
             StringBuilder sb = new StringBuilder();
@@ -238,7 +224,7 @@ public final class PreProLanguage extends TruffleLanguage<SLContext> {
             sb.append(";}");
             String language = requestedSource.getLanguage() == null ? ID : requestedSource.getLanguage();
             Source decoratedSource = Source.newBuilder(language, sb.toString(), request.getSource().getName()).build();
-            functions = SimpleLanguageParser.parseSL(this, decoratedSource);
+            functions = PreProParser.parsePrePro(this, decoratedSource);
         }
 
         RootCallTarget main = functions.get("main");
@@ -246,33 +232,33 @@ public final class PreProLanguage extends TruffleLanguage<SLContext> {
         if (main != null) {
             /*
              * We have a main function, so "evaluating" the parsed source means invoking that main
-             * function. However, we need to lazily register functions into the SLContext first, so
-             * we cannot use the original SLRootNode for the main function. Instead, we create a new
-             * SLEvalRootNode that does everything we need.
+             * function. However, we need to lazily register functions into the PreProContext first, so
+             * we cannot use the original PreProRootNode for the main function. Instead, we create a new
+             * PreProEvalRootNode that does everything we need.
              */
-            evalMain = new SLEvalRootNode(this, main, functions);
+            evalMain = new PreProEvalRootNode(this, main, functions);
         } else {
             /*
              * Even without a main function, "evaluating" the parsed source needs to register the
-             * functions into the SLContext.
+             * functions into the PreProContext.
              */
-            evalMain = new SLEvalRootNode(this, null, functions);
+            evalMain = new PreProEvalRootNode(this, null, functions);
         }
         return Truffle.getRuntime().createCallTarget(evalMain);
     }
 
     /*
-     * Still necessary for the old SL TCK to pass. We should remove with the old TCK. New language
+     * Still necessary for the old PrePro TCK to pass. We should remove with the old TCK. New language
      * should not override this.
      */
     @SuppressWarnings("deprecation")
     @Override
-    protected Object findExportedSymbol(SLContext context, String globalName, boolean onlyExplicit) {
+    protected Object findExportedSymbol(PreProContext context, String globalName, boolean onlyExplicit) {
         return context.getFunctionRegistry().lookup(globalName, false);
     }
 
     @Override
-    protected boolean isVisible(SLContext context, Object value) {
+    protected boolean isVisible(PreProContext context, Object value) {
         return !InteropLibrary.getFactory().getUncached(value).isNull(value);
     }
 
@@ -280,19 +266,17 @@ public final class PreProLanguage extends TruffleLanguage<SLContext> {
     protected boolean isObjectOfLanguage(Object object) {
         if (!(object instanceof TruffleObject)) {
             return false;
-        } else if (object instanceof PreProConstant || object instanceof PreProScalar
+        } else return object instanceof PreProConstant || object instanceof PreProScalar
                 || object instanceof PreProMatrix || object instanceof PreProVector
-                || object instanceof SLFunction) {
+                || object instanceof PreProFunction || object instanceof PreProNull;
+        // No Objects in PrePro for now
+        /*else if (PreProContext.isPreProObject(object)) {
             return true;
-        } else if (SLContext.isSLObject(object)) {
-            return true;
-        } else {
-            return false;
-        }
+        } */
     }
 
     @Override
-    protected String toString(SLContext context, Object value) {
+    protected String toString(PreProContext context, Object value) {
         return toString(value);
     }
 
@@ -302,23 +286,23 @@ public final class PreProLanguage extends TruffleLanguage<SLContext> {
                 return "ANY";
             }
             InteropLibrary interop = InteropLibrary.getFactory().getUncached(value);
-            if (interop.fitsInLong(value)) {
-                return Long.toString(interop.asLong(value));
-            } else if (interop.isBoolean(value)) {
-                return Boolean.toString(interop.asBoolean(value));
+            if (interop.fitsInDouble(value)) {
+                return Double.toString(interop.asDouble(value));
             } else if (interop.isString(value)) {
                 return interop.asString(value);
             } else if (interop.isNull(value)) {
                 return "NULL";
             } else if (interop.isExecutable(value)) {
-                if (value instanceof SLFunction) {
-                    return ((SLFunction) value).getName();
+                if (value instanceof PreProFunction) {
+                    return ((PreProFunction) value).getName();
                 } else {
                     return "Function";
                 }
-            } else if (interop.hasMembers(value)) {
+                // No Objects in PrePro for now
+            } /*else if (interop.hasMembers(value)) {
                 return "Object";
-            } else if (value instanceof SLBigNumber) {
+            } */ else if (value instanceof PreProConstant || value instanceof PreProScalar
+                    || value instanceof PreProMatrix || value instanceof PreProVector) {
                 return value.toString();
             } else {
                 return "Unsupported";
@@ -330,7 +314,7 @@ public final class PreProLanguage extends TruffleLanguage<SLContext> {
     }
 
     @Override
-    protected Object findMetaObject(SLContext context, Object value) {
+    protected Object findMetaObject(PreProContext context, Object value) {
         return getMetaObject(value);
     }
 
@@ -339,84 +323,85 @@ public final class PreProLanguage extends TruffleLanguage<SLContext> {
             return "ANY";
         }
         InteropLibrary interop = InteropLibrary.getFactory().getUncached(value);
-        if (interop.isNumber(value) || value instanceof SLBigNumber) {
+        if (interop.isNumber(value)) {
             return "Number";
-        } else if (interop.isBoolean(value)) {
-            return "Boolean";
+        } else if (value instanceof PreProConstant) {
+            return "Constant";
+        } else if (value instanceof PreProScalar) {
+            return "Scalar";
+        } else if (value instanceof PreProMatrix) {
+            return "Matrix";
+        } else if (value instanceof PreProVector) {
+            return "Vector";
         } else if (interop.isString(value)) {
             return "String";
         } else if (interop.isNull(value)) {
             return "NULL";
         } else if (interop.isExecutable(value)) {
             return "Function";
-        } else if (interop.hasMembers(value)) {
+            // No Objects in PrePro for now
+        } /*else if (interop.hasMembers(value)) {
             return "Object";
-        } else {
+        } */ else {
             return "Unsupported";
         }
     }
 
     @Override
-    protected SourceSection findSourceLocation(SLContext context, Object value) {
-        if (value instanceof SLFunction) {
-            return ((SLFunction) value).getDeclaredLocation();
+    protected SourceSection findSourceLocation(PreProContext context, Object value) {
+        if (value instanceof PreProFunction) {
+            return ((PreProFunction) value).getDeclaredLocation();
         }
         return null;
     }
 
     @Override
-    public Iterable<Scope> findLocalScopes(SLContext context, Node node, Frame frame) {
-        final SLLexicalScope scope = SLLexicalScope.createScope(node);
-        return new Iterable<Scope>() {
+    public Iterable<Scope> findLocalScopes(PreProContext context, Node node, Frame frame) {
+        final PreProLexicalScope scope = PreProLexicalScope.createScope(node);
+        return () -> new Iterator<Scope>() {
+            private PreProLexicalScope previousScope;
+            private PreProLexicalScope nextScope = scope;
+
             @Override
-            public Iterator<Scope> iterator() {
-                return new Iterator<Scope>() {
-                    private SLLexicalScope previousScope;
-                    private SLLexicalScope nextScope = scope;
+            public boolean hasNext() {
+                if (nextScope == null) {
+                    nextScope = previousScope.findParent();
+                }
+                return nextScope != null;
+            }
 
-                    @Override
-                    public boolean hasNext() {
-                        if (nextScope == null) {
-                            nextScope = previousScope.findParent();
-                        }
-                        return nextScope != null;
-                    }
+            @Override
+            public Scope next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                Object functionObject = findFunctionObject();
+                Scope vscope = Scope.newBuilder(nextScope.getName(), nextScope.getVariables(frame)).node(nextScope.getNode()).arguments(nextScope.getArguments(frame)).rootInstance(
+                        functionObject).build();
+                previousScope = nextScope;
+                nextScope = null;
+                return vscope;
+            }
 
-                    @Override
-                    public Scope next() {
-                        if (!hasNext()) {
-                            throw new NoSuchElementException();
-                        }
-                        Object functionObject = findFunctionObject();
-                        Scope vscope = Scope.newBuilder(nextScope.getName(), nextScope.getVariables(frame)).node(nextScope.getNode()).arguments(nextScope.getArguments(frame)).rootInstance(
-                                functionObject).build();
-                        previousScope = nextScope;
-                        nextScope = null;
-                        return vscope;
-                    }
-
-                    private Object findFunctionObject() {
-                        String name = node.getRootNode().getName();
-                        return context.getFunctionRegistry().getFunction(name);
-                    }
-                };
+            private Object findFunctionObject() {
+                String name = node.getRootNode().getName();
+                return context.getFunctionRegistry().getFunction(name);
             }
         };
     }
 
     @Override
-    protected Iterable<Scope> findTopScopes(SLContext context) {
+    protected Iterable<Scope> findTopScopes(PreProContext context) {
         return context.getTopScopes();
     }
 
-    public static SLContext getCurrentContext() {
+    public static PreProContext getCurrentContext() {
         return getCurrentContext(PreProLanguage.class);
     }
 
-    private static final List<NodeFactory<? extends SLBuiltinNode>> EXTERNAL_BUILTINS = Collections.synchronizedList(new ArrayList<>());
+    private static final List<NodeFactory<? extends PreProBuiltinNode>> EXTERNAL_BUILTINS = Collections.synchronizedList(new ArrayList<>());
 
-    public static void installBuiltin(NodeFactory<? extends SLBuiltinNode> builtin) {
+    public static void installBuiltin(NodeFactory<? extends PreProBuiltinNode> builtin) {
         EXTERNAL_BUILTINS.add(builtin);
     }
-
 }

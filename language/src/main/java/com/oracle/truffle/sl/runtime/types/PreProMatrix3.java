@@ -20,23 +20,23 @@ public class PreProMatrix3 extends PreProMatrix implements TruffleObject {
     }
 
     @TruffleBoundary
-    public PreProTimeSeries mul(PreProScalar right) {
+    public PreProMatrix3 mul(PreProScalar right) {
         return new PreProMatrix3(multiplyMatrixWithScalar(this, right, 3));
     }
 
     @TruffleBoundary
-    public PreProTimeSeries mul(PreProVector3 right) {
+    public PreProVector3 mul(PreProVector3 right) {
         return new PreProVector3(multiplyMatrixWithVector(this, right, 3));
     }
 
     @TruffleBoundary
-    public PreProTimeSeries mul(PreProMatrix3 right) {
+    public PreProMatrix3 mul(PreProMatrix3 right) {
         return new PreProMatrix3(multiplyMatrixWithMatrix(this, right, 3));
     }
 
     @Override
     @TruffleBoundary
     public String toString() {
-        return "Matrix3{" + "ndArray=" + getNdArray() + "}";
+        return timeSeries().shapeInfoToString();
     }
 }

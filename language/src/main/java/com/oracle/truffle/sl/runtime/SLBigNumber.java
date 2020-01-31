@@ -49,6 +49,8 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 
+//TODO: Remove when done migrating
+
 @ExportLibrary(InteropLibrary.class)
 public final class SLBigNumber implements TruffleObject, Comparable<SLBigNumber> {
 

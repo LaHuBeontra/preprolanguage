@@ -18,6 +18,6 @@ public class PreProMatrix extends PreProTimeSeries implements TruffleObject {
     @Override
     @TruffleBoundary
     public String toString() {
-        return "Matrix{" + "ndArray=" + getNdArray() + "}";
+        return timeSeries().shapeInfoToString();
     }
 }

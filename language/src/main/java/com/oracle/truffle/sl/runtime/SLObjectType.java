@@ -61,6 +61,8 @@ import com.oracle.truffle.api.object.ObjectType;
 import com.oracle.truffle.api.object.Property;
 import com.oracle.truffle.api.object.Shape;
 
+//TODO: Implement Objects in PrePro?
+
 @ExportLibrary(value = InteropLibrary.class, receiverType = DynamicObject.class)
 public final class SLObjectType extends ObjectType {
 
@@ -96,8 +98,8 @@ public final class SLObjectType extends ObjectType {
 
         @Specialization(guards = "receiver.getShape() == cachedShape")
         static Keys doCached(DynamicObject receiver, boolean includeInternal, //
-                        @Cached("receiver.getShape()") Shape cachedShape, //
-                        @Cached(value = "doGeneric(receiver, includeInternal)", allowUncached = true) Keys cachedKeys) {
+                             @Cached("receiver.getShape()") Shape cachedShape, //
+                             @Cached(value = "doGeneric(receiver, includeInternal)", allowUncached = true) Keys cachedKeys) {
             return cachedKeys;
         }
 
@@ -116,9 +118,9 @@ public final class SLObjectType extends ObjectType {
 
         @Specialization(guards = {"receiver.getShape() == cachedShape", "cachedMember.equals(member)"})
         static boolean doCached(DynamicObject receiver, String member,
-                        @Cached("receiver.getShape()") Shape cachedShape,
-                        @Cached("member") String cachedMember,
-                        @Cached("doGeneric(receiver, member)") boolean cachedResult) {
+                                @Cached("receiver.getShape()") Shape cachedShape,
+                                @Cached("member") String cachedMember,
+                                @Cached("doGeneric(receiver, member)") boolean cachedResult) {
             assert cachedResult == doGeneric(receiver, member);
             return cachedResult;
         }
@@ -133,7 +135,7 @@ public final class SLObjectType extends ObjectType {
     @ExportMessage
     @SuppressWarnings("unused")
     static boolean isMemberInsertable(DynamicObject receiver, String member,
-                    @CachedLibrary("receiver") InteropLibrary receivers) {
+                                      @CachedLibrary("receiver") InteropLibrary receivers) {
         return !receivers.isMemberExisting(receiver, member);
     }
 
@@ -183,15 +185,15 @@ public final class SLObjectType extends ObjectType {
          * Polymorphic inline cache for a limited number of distinct property names and shapes.
          */
         @Specialization(limit = "CACHE_LIMIT", //
-                        guards = {
-                                        "receiver.getShape() == cachedShape",
-                                        "cachedName.equals(name)"
-                        }, //
-                        assumptions = "cachedShape.getValidAssumption()")
+                guards = {
+                        "receiver.getShape() == cachedShape",
+                        "cachedName.equals(name)"
+                }, //
+                assumptions = "cachedShape.getValidAssumption()")
         static Object readCached(DynamicObject receiver, @SuppressWarnings("unused") String name,
-                        @SuppressWarnings("unused") @Cached("name") String cachedName,
-                        @Cached("receiver.getShape()") Shape cachedShape,
-                        @Cached("lookupLocation(cachedShape, name)") Location location) {
+                                 @SuppressWarnings("unused") @Cached("name") String cachedName,
+                                 @Cached("receiver.getShape()") Shape cachedShape,
+                                 @Cached("lookupLocation(cachedShape, name)") Location location) {
             return location.get(receiver, cachedShape);
         }
 
@@ -240,19 +242,19 @@ public final class SLObjectType extends ObjectType {
          * necessary).
          */
         @Specialization(limit = "CACHE_LIMIT", //
-                        guards = {
-                                        "cachedName.equals(name)",
-                                        "shapeCheck(shape, receiver)",
-                                        "location != null",
-                                        "canSet(location, value)"
-                        }, //
-                        assumptions = {
-                                        "shape.getValidAssumption()"
-                        })
+                guards = {
+                        "cachedName.equals(name)",
+                        "shapeCheck(shape, receiver)",
+                        "location != null",
+                        "canSet(location, value)"
+                }, //
+                assumptions = {
+                        "shape.getValidAssumption()"
+                })
         static void writeExistingPropertyCached(DynamicObject receiver, @SuppressWarnings("unused") String name, Object value,
-                        @SuppressWarnings("unused") @Cached("name") String cachedName,
-                        @Cached("receiver.getShape()") Shape shape,
-                        @Cached("lookupLocation(shape, name, value)") Location location) {
+                                                @SuppressWarnings("unused") @Cached("name") String cachedName,
+                                                @Cached("receiver.getShape()") Shape shape,
+                                                @Cached("lookupLocation(shape, name, value)") Location location) {
             try {
                 location.set(receiver, value, shape);
 
@@ -267,23 +269,23 @@ public final class SLObjectType extends ObjectType {
          * necessary).
          */
         @Specialization(limit = "CACHE_LIMIT", //
-                        guards = {
-                                        "cachedName.equals(name)",
-                                        "receiver.getShape() == oldShape",
-                                        "oldLocation == null",
-                                        "canStore(newLocation, value)"
-                        }, //
-                        assumptions = {
-                                        "oldShape.getValidAssumption()",
-                                        "newShape.getValidAssumption()"
-                        })
+                guards = {
+                        "cachedName.equals(name)",
+                        "receiver.getShape() == oldShape",
+                        "oldLocation == null",
+                        "canStore(newLocation, value)"
+                }, //
+                assumptions = {
+                        "oldShape.getValidAssumption()",
+                        "newShape.getValidAssumption()"
+                })
         @SuppressWarnings("unused")
         static void writeNewPropertyCached(DynamicObject receiver, String name, Object value,
-                        @Cached("name") Object cachedName,
-                        @Cached("receiver.getShape()") Shape oldShape,
-                        @Cached("lookupLocation(oldShape, name, value)") Location oldLocation,
-                        @Cached("defineProperty(oldShape, name, value)") Shape newShape,
-                        @Cached("lookupLocation(newShape, name)") Location newLocation) {
+                                           @Cached("name") Object cachedName,
+                                           @Cached("receiver.getShape()") Shape oldShape,
+                                           @Cached("lookupLocation(oldShape, name, value)") Location oldLocation,
+                                           @Cached("defineProperty(oldShape, name, value)") Shape newShape,
+                                           @Cached("lookupLocation(newShape, name)") Location newLocation) {
             try {
                 newLocation.set(receiver, value, oldShape, newShape);
 
@@ -293,7 +295,9 @@ public final class SLObjectType extends ObjectType {
             }
         }
 
-        /** Try to find the given property in the shape. */
+        /**
+         * Try to find the given property in the shape.
+         */
         static Location lookupLocation(Shape shape, String name) {
             CompilerAsserts.neverPartOfCompilation();
 
@@ -337,7 +341,9 @@ public final class SLObjectType extends ObjectType {
             return location.canSet(value);
         }
 
-        /** See {@link #canSet} for the difference between the two methods. */
+        /**
+         * See {@link #canSet} for the difference between the two methods.
+         */
         static boolean canStore(Location location, Object value) {
             return location.canStore(value);
         }

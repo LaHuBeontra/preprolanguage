@@ -20,6 +20,6 @@ public class PreProVector4 extends PreProVector implements TruffleObject {
     @Override
     @TruffleBoundary
     public String toString() {
-        return "Vector4{" + "ndArray=" + getNdArray() + "}";
+        return timeSeries().shapeInfoToString();
     }
 }

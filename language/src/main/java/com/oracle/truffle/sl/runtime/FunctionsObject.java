@@ -55,7 +55,7 @@ import com.oracle.truffle.api.library.ExportMessage;
 @SuppressWarnings("static-method")
 final class FunctionsObject implements TruffleObject {
 
-    final Map<String, SLFunction> functions = new HashMap<>();
+    final Map<String, PreProFunction> functions = new HashMap<>();
 
     FunctionsObject() {
     }

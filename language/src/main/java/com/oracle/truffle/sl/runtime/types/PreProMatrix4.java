@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 @ExportLibrary(InteropLibrary.class)
 public class PreProMatrix4 extends PreProMatrix implements TruffleObject {
+
     public PreProMatrix4(INDArray ndArray) {
         super(ndArray);
         if (ndArray.shape()[0] != 4 || ndArray.shape()[1] != 4) {
@@ -19,23 +20,23 @@ public class PreProMatrix4 extends PreProMatrix implements TruffleObject {
     }
 
     @TruffleBoundary
-    public PreProTimeSeries add(PreProMatrix4 right) {
-        return new PreProMatrix4(getNdArray().add(right.getNdArray()));
+    public PreProMatrix4 add(PreProMatrix4 right) {
+        return new PreProMatrix4(timeSeries().add(right.timeSeries()));
     }
 
     @TruffleBoundary
-    public PreProTimeSeries sub(PreProMatrix4 right) {
-        return new PreProMatrix4(getNdArray().sub(right.getNdArray()));
+    public PreProMatrix4 sub(PreProMatrix4 right) {
+        return new PreProMatrix4(timeSeries().sub(right.timeSeries()));
     }
 
     @TruffleBoundary
-    public PreProTimeSeries mul(PreProMatrix4 right) {
+    public PreProMatrix4 mul(PreProMatrix4 right) {
         return new PreProMatrix4(multiplyMatrixWithMatrix(this, right, 4));
     }
 
     @Override
     @TruffleBoundary
     public String toString() {
-        return "Matrix4{" + "ndArray=" + getNdArray() + "}";
+        return timeSeries().shapeInfoToString();
     }
 }

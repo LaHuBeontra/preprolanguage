@@ -20,50 +20,50 @@ public class PreProScalar extends PreProTimeSeries implements TruffleObject {
     }
 
     @TruffleBoundary
-    public PreProTimeSeries add(PreProScalar right) {
-        return new PreProScalar(getNdArray().add(right.getNdArray()));
+    public PreProScalar add(PreProScalar right) {
+        return new PreProScalar(timeSeries().add(right.timeSeries()));
     }
 
     @TruffleBoundary
-    public PreProTimeSeries sub(PreProScalar right) {
-        return new PreProScalar(getNdArray().sub(right.getNdArray()));
+    public PreProScalar sub(PreProScalar right) {
+        return new PreProScalar(timeSeries().sub(right.timeSeries()));
     }
 
     @TruffleBoundary
-    public PreProTimeSeries mul(PreProScalar right) {
-        return new PreProScalar(getNdArray().mul(right.getNdArray()));
+    public PreProScalar mul(PreProScalar right) {
+        return new PreProScalar(timeSeries().mul(right.timeSeries()));
     }
 
     @TruffleBoundary
-    public PreProTimeSeries div(PreProScalar right) {
-        return new PreProScalar(getNdArray().div(right.getNdArray()));
+    public PreProScalar div(PreProScalar right) {
+        return new PreProScalar(timeSeries().div(right.timeSeries()));
     }
 
     @Override
     @TruffleBoundary
     public String toString() {
-        return "Scalar{" + "ndArray=" + getNdArray() + "}";
+        return timeSeries().shapeInfoToString();
     }
 
     @TruffleBoundary
     public PreProScalar isEqualTo(PreProScalar right) {
-        double[] result = new double[getAmountTimeElements()];
-        for (int i = 0; i < getAmountTimeElements(); i++) {
-            if (getNdArray().getDouble(i) == right.getNdArray().getDouble(i)) {
+        double[] result = new double[amountTimeElements()];
+        for (int i = 0; i < amountTimeElements(); i++) {
+            if (timeSeries().getDouble(i) == right.timeSeries().getDouble(i)) {
                 result[i] = 1;
             } else {
                 result[i] = 0;
             }
 
         }
-        return new PreProScalar(Nd4j.create(result, new int[]{getAmountTimeElements(), 1}));
+        return new PreProScalar(Nd4j.create(result, new int[]{amountTimeElements(), 1}));
     }
 
     @TruffleBoundary
     public PreProScalar isLessThan(PreProScalar right) {
-        double[] result = new double[getAmountTimeElements()];
-        for (int i = 0; i < getAmountTimeElements(); i++) {
-            if (getNdArray().getDouble(i) < right.getNdArray().getDouble(i)) {
+        double[] result = new double[amountTimeElements()];
+        for (int i = 0; i < amountTimeElements(); i++) {
+            if (timeSeries().getDouble(i) < right.timeSeries().getDouble(i)) {
                 result[i] = 1;
             } else {
                 result[i] = 0;
@@ -71,14 +71,14 @@ public class PreProScalar extends PreProTimeSeries implements TruffleObject {
 
         }
 
-        return new PreProScalar(Nd4j.create(result, new int[]{getAmountTimeElements(), 1}));
+        return new PreProScalar(Nd4j.create(result, new int[]{amountTimeElements(), 1}));
     }
 
     @TruffleBoundary
     public PreProScalar isLessOrEqualThan(PreProScalar right) {
-        double[] result = new double[getAmountTimeElements()];
-        for (int i = 0; i < getAmountTimeElements(); i++) {
-            if (getNdArray().getDouble(i) <= right.getNdArray().getDouble(i)) {
+        double[] result = new double[amountTimeElements()];
+        for (int i = 0; i < amountTimeElements(); i++) {
+            if (timeSeries().getDouble(i) <= right.timeSeries().getDouble(i)) {
                 result[i] = 1;
             } else {
                 result[i] = 0;
@@ -86,14 +86,14 @@ public class PreProScalar extends PreProTimeSeries implements TruffleObject {
 
         }
 
-        return new PreProScalar(Nd4j.create(result, new int[]{getAmountTimeElements(), 1}));
+        return new PreProScalar(Nd4j.create(result, new int[]{amountTimeElements(), 1}));
     }
 
     @TruffleBoundary
     public PreProScalar isGreaterThan(PreProScalar right) {
-        double[] result = new double[getAmountTimeElements()];
-        for (int i = 0; i < getAmountTimeElements(); i++) {
-            if (getNdArray().getDouble(i) > right.getNdArray().getDouble(i)) {
+        double[] result = new double[amountTimeElements()];
+        for (int i = 0; i < amountTimeElements(); i++) {
+            if (timeSeries().getDouble(i) > right.timeSeries().getDouble(i)) {
                 result[i] = 1;
             } else {
                 result[i] = 0;
@@ -101,14 +101,14 @@ public class PreProScalar extends PreProTimeSeries implements TruffleObject {
 
         }
 
-        return new PreProScalar(Nd4j.create(result, new int[]{getAmountTimeElements(), 1}));
+        return new PreProScalar(Nd4j.create(result, new int[]{amountTimeElements(), 1}));
     }
 
     @TruffleBoundary
     public PreProScalar isGreaterOrEqualThan(PreProScalar right) {
-        double[] result = new double[getAmountTimeElements()];
-        for (int i = 0; i < getAmountTimeElements(); i++) {
-            if (getNdArray().getDouble(i) >= right.getNdArray().getDouble(i)) {
+        double[] result = new double[amountTimeElements()];
+        for (int i = 0; i < amountTimeElements(); i++) {
+            if (timeSeries().getDouble(i) >= right.timeSeries().getDouble(i)) {
                 result[i] = 1;
             } else {
                 result[i] = 0;
@@ -116,6 +116,6 @@ public class PreProScalar extends PreProTimeSeries implements TruffleObject {
 
         }
 
-        return new PreProScalar(Nd4j.create(result, new int[]{getAmountTimeElements(), 1}));
+        return new PreProScalar(Nd4j.create(result, new int[]{amountTimeElements(), 1}));
     }
 }
