@@ -50,15 +50,20 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
-public class PreProConstantTest {
+public class ConstantAdditionTest {
 
     private Context context;
+    private Value incrementFnc;
 
     @Before
     public void setUp() {
         context = Context.create(PreProLanguage.ID);
+        final Source src =
+                Source.newBuilder(PreProLanguage.ID,
+                        "function increment(const n) returns const {return n + 1;}",
+                        "increment3.prepro").buildLiteral();
+        context.eval(src);
+        incrementFnc = context.getBindings(PreProLanguage.ID).getMember("increment");
     }
 
     @After
@@ -68,16 +73,17 @@ public class PreProConstantTest {
 
     @Test
     public void increment3() {
-        final Source src =
-                Source.newBuilder(PreProLanguage.ID,
-                        "function increment(const n) returns const {return n + 1;}",
-                        "increment3.prepro").buildLiteral();
-        context.eval(src);
-        final Value fnc = context.getBindings(PreProLanguage.ID).getMember("increment");
-        Assert.assertTrue(fnc.canExecute());
-        final Value res = fnc.execute(new PreProConstant(3));
+        Assert.assertTrue(incrementFnc.canExecute());
+        final Value res = incrementFnc.execute(new PreProConstant(3));
         Assert.assertTrue(res.isNumber());
-       // System.out.println("Host Object: " + res.getMember("value"));
-        Assert.assertEquals(4, res.asDouble(), 0.0001);
+        Assert.assertEquals(4, res.asDouble(), 0);
+    }
+
+    @Test
+    public void increment1234567() {
+        Assert.assertTrue(incrementFnc.canExecute());
+        final Value res = incrementFnc.execute(new PreProConstant(1234567));
+        Assert.assertTrue(res.isNumber());
+        Assert.assertEquals(1234568, res.asDouble(), 0);
     }
 }

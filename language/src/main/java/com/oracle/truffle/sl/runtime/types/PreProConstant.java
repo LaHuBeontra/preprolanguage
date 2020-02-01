@@ -7,16 +7,11 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.cpu.nativecpu.NDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @ExportLibrary(InteropLibrary.class)
-public final class PreProConstant extends PreProTimeSeries implements TruffleObject, Comparable<PreProConstant> {
+public final class PreProConstant extends PreProTimeSeries implements TruffleObject {
 
-    public Map<String, INDArray> lolMap = new HashMap<>();
     // PrePro has no Boolean type, this is the replacement
     public static final PreProConstant TRUE = new PreProConstant(Nd4j.create(new int[]{1, 1}, new double[]{1}));
     public static final PreProConstant FALSE = new PreProConstant(Nd4j.create(new int[]{1, 1}, new double[]{0}));
@@ -93,58 +88,46 @@ public final class PreProConstant extends PreProTimeSeries implements TruffleObj
         return right.div(this);
     }
 
-    @Override
-    public int compareTo(PreProConstant o) {
-        return 0;
-    }
-
     @SuppressWarnings("static-method")
     @ExportMessage
     boolean isNumber() {
         return true;
     }
 
-//    @ExportMessage
-//    @TruffleBoundary
-//    INDArray getMember(String key) {
-//        lolMap.put(key, ndArray);
-//        return lolMap.get(key);
-//    }
-
     @ExportMessage
     @TruffleBoundary
     boolean fitsInByte() {
-        return getDoubleValue() < 8;
+        return false;
     }
 
     @ExportMessage
     @TruffleBoundary
     boolean fitsInShort() {
-        return getDoubleValue() < 16;
+        return false;
     }
 
     @ExportMessage
     @TruffleBoundary
     boolean fitsInFloat() {
-        return fitsInInt();
+        return false;
     }
 
     @ExportMessage
     @TruffleBoundary
     boolean fitsInLong() {
-        return getDoubleValue() < 64;
+        return false;
     }
 
     @ExportMessage
     @TruffleBoundary
     boolean fitsInInt() {
-        return getDoubleValue() < 32;
+        return false;
     }
 
     @ExportMessage
     @TruffleBoundary
     boolean fitsInDouble() {
-        return fitsInLong();
+        return true;
     }
 
     @ExportMessage
