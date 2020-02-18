@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.oracle</groupId>
         <artifactId>simplelanguage-parent</artifactId>
-        <version>19.3.0.2-SNAPSHOT</version>
+        <version>19.3.1-SNAPSHOT</version>
     </parent>
     <artifactId>prepro</artifactId>
     <profiles>
@@ -65,6 +65,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.10</version>
                 <configuration>
                     <downloadSources>true</downloadSources>
                     <downloadJavadocs>true</downloadJavadocs>
@@ -160,6 +161,12 @@
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
             <version>4.7</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.25</version>
         </dependency>
     </dependencies>
 </project>
