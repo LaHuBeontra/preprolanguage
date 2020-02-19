@@ -111,44 +111,4 @@ public final class PreProWriteLocalVariableNode extends PreProStatementNode {
     FrameSlot getSlot() {
         return this.frameSlot;
     }
-//
-//    /**
-//     * Specialized method to write a primitive {@code double} value. This is only possible if the
-//     * local variable also has currently the type {@code double} or was never written before,
-//     * therefore a Truffle DSL {@link #isDoubleOrIllegal(VirtualFrame) custom guard} is specified.
-//     */
-//    @Specialization(guards = "isPreProConstantOrIllegal(frame)")
-//    protected double writeDouble(VirtualFrame frame, double value) {
-//        /* Initialize type on first write of the local variable. No-op if kind is already Long. */
-//        frame.getFrameDescriptor().setFrameSlotKind(frameSlot, FrameSlotKind.Double);
-//
-//        frame.setDouble(frameSlot, value);
-//        return value;
-//    }
-//
-//    /**
-//     * Generic write method that works for all possible types.
-//     * <p>
-//     * Since this method takes a value of type {@link Object}, it is guaranteed to never fail,
-//     * i.e., once we are in this specialization the node will never be re-specialized.
-//     */
-//    @Specialization(replaces = {"writeDouble"})
-//    protected Object write(VirtualFrame frame, Object value) {
-//        /*
-//         * Regardless of the type before, the new and final type of the local variable is Object.
-//         * Changing the slot kind also discards compiled code, because the variable type is
-//         * important when the compiler optimizes a method.
-//         *
-//         * No-op if kind is already Object.
-//         */
-//        frame.getFrameDescriptor().setFrameSlotKind(frameSlot, FrameSlotKind.Object);
-//
-//        frame.setObject(frameSlot, value);
-//        return value;
-//    }
-//
-//    protected boolean isDoubleOrIllegal(VirtualFrame frame) {
-//        final FrameSlotKind kind = frame.getFrameDescriptor().getFrameSlotKind(frameSlot);
-//        return kind == FrameSlotKind.Double || kind == FrameSlotKind.Illegal;
-//    }
 }
