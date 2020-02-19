@@ -131,6 +131,11 @@ public final class PreProFunction implements TruffleObject {
         return callTargetStable.getAssumption();
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
     /**
      * {@link PreProFunction} instances are always visible as executable to other languages.
      */

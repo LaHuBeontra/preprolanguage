@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -38,35 +38,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.oracle.truffle.sl.builtins;
+package com.oracle.truffle.sl.test;
 
-import com.oracle.truffle.api.dsl.CachedContext;
-import com.oracle.truffle.api.dsl.Specialization;
-import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.interop.UnknownIdentifierException;
-import com.oracle.truffle.api.interop.UnsupportedMessageException;
-import com.oracle.truffle.api.library.CachedLibrary;
-import com.oracle.truffle.api.nodes.NodeInfo;
-import com.oracle.truffle.sl.PreProException;
 import com.oracle.truffle.sl.PreProLanguage;
-import com.oracle.truffle.sl.runtime.PreProContext;
+import com.oracle.truffle.sl.runtime.types.PreProConstant;
+import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.PolyglotAccess;
+import org.graalvm.polyglot.Value;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
-/**
- * Built-in function that goes through to import a symbol from the polyglot bindings.
- */
-@NodeInfo(shortName = "importSymbol")
-public abstract class PreProImportBuiltin extends PreProBuiltinNode {
+public class PolyglotImportingTest {
 
-    @Specialization
-    public Object importSymbol(String symbol,
-                               @CachedLibrary(limit = "3") InteropLibrary arrays,
-                               @CachedContext(PreProLanguage.class) PreProContext context) {
-        try {
-            return arrays.readMember(context.getPolyglotBindings(), symbol);
-        } catch (UnsupportedMessageException | UnknownIdentifierException e) {
-            throw PreProException.typeError(this, symbol);
-        } catch (SecurityException e) {
-            throw new PreProException("No polyglot access allowed.", this);
-        }
+    private Context context;
+
+    @Before
+    public void setUp() {
+        context = Context.newBuilder().allowPolyglotAccess(PolyglotAccess.ALL).build();
+    }
+
+    @After
+    public void tearDown() {
+        context.close();
+    }
+
+    @Test
+    public void importPreProConstant() {
+        context.getPolyglotBindings().putMember("preProConst", new PreProConstant(41));
+        String preProScript
+                = "function bind() returns const { " +
+                "const imported = importSymbol(\"preProConst\");" +
+                "return imported + 1;" +
+                "}";
+        context.eval(PreProLanguage.ID, preProScript);
+        Value bindFnc = context.getBindings(PreProLanguage.ID).getMember("bind");
+        Assert.assertTrue(bindFnc.canExecute());
+        Value res = bindFnc.execute();
+        Assert.assertTrue(res.isNumber());
+        Assert.assertEquals(42, res.asDouble(), 0);
     }
 }
