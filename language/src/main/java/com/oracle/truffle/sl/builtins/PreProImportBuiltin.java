@@ -54,7 +54,7 @@ import com.oracle.truffle.sl.runtime.PreProContext;
 /**
  * Built-in function that goes through to import a symbol from the polyglot bindings.
  */
-@NodeInfo(shortName = "importSymbol")
+@NodeInfo(shortName = "import")
 public abstract class PreProImportBuiltin extends PreProBuiltinNode {
 
     @Specialization

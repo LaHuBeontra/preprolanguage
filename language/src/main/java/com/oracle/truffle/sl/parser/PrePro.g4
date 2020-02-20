@@ -127,18 +127,8 @@ s='('
                                                   List<PreProStatementNode> body = new ArrayList<>(); }
 '{'
 (
-'import'
-importDefinitions
-';'
-)?
-(
     statement                                   { body.add($statement.result); }
 )*
-(
-'export'
-exportDefinitions
-';'
-)?
 e='}'
                                                 {factory.finishFunction(
                                                   factory.finishBlock(body, $s.getStartIndex(), $e.getStopIndex() - $s.getStartIndex() + 1)
@@ -182,31 +172,6 @@ functionArguments:
         TYPE IDENTIFIER                              { factory.addFormalParameter($TYPE, factory.createStringLiteral($IDENTIFIER, false)); }
     )*
 )?
-;
-
-importDefinitions:
-
-(
-    (
-        TYPE IDENTIFIER
-        | 'optional' TYPE IDENTIFIER
-    )
-    (
-        (
-            ',' TYPE IDENTIFIER
-            | ',' 'optional' TYPE IDENTIFIER
-        )
-    )*
-)?
-;
-
-exportDefinitions:
-
-IDENTIFIER
-(
-    ','
-    IDENTIFIER
-)*
 ;
 
 statement returns [PreProStatementNode result]
