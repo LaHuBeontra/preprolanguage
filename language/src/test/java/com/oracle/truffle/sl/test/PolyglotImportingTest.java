@@ -42,17 +42,22 @@ package com.oracle.truffle.sl.test;
 
 import com.oracle.truffle.sl.PreProLanguage;
 import com.oracle.truffle.sl.runtime.types.PreProConstant;
+import com.oracle.truffle.sl.runtime.types.PreProMatrix3;
+import com.oracle.truffle.sl.runtime.types.PreProMatrix4;
+import com.oracle.truffle.sl.runtime.types.PreProVector3;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotAccess;
 import org.graalvm.polyglot.Value;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
 import java.util.stream.IntStream;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class PolyglotImportingTest {
 
@@ -78,14 +83,53 @@ public class PolyglotImportingTest {
 
     @Test
     public void importPreProConstant() {
-        String preProScript
-                = "function bind() returns const { " +
+        PreProConstant preProConstant = new PreProConstant(constant);
+        String preProScript = "function bind() returns const { " +
                 "return import(\"boundVar\");" +
                 "}";
         context.eval(PreProLanguage.ID, preProScript);
         context.getPolyglotBindings().putMember("boundVar", new PreProConstant(constant));
         Value res = context.getBindings(PreProLanguage.ID).getMember("bind").execute();
-        Assert.assertTrue(res.isNumber());
-        Assert.assertEquals(42, res.asDouble(), 0);
+        assertEquals("Number", res.getMetaObject().toString());
+        assertEquals(preProConstant.toString(), res.toString());
+    }
+
+    @Test
+    public void importPreProVector3() {
+        PreProVector3 preProVector3 = new PreProVector3(vector3);
+        String preProScript = "function bind() returns vec3 { " +
+                "return import(\"boundVar\");" +
+                "}";
+        context.eval(PreProLanguage.ID, preProScript);
+        context.getPolyglotBindings().putMember("boundVar", new PreProVector3(vector3));
+        Value res = context.getBindings(PreProLanguage.ID).getMember("bind").execute();
+        assertEquals("Vector", res.getMetaObject().toString());
+        assertEquals(preProVector3.toString(), res.toString());
+    }
+
+    @Test
+    public void importPreProMatrix3() {
+        PreProMatrix3 preProMatrix3 = new PreProMatrix3(matrix3);
+        String preProScript = "function bind() returns mat3 { " +
+                "return import(\"boundVar\");" +
+                "}";
+        context.eval(PreProLanguage.ID, preProScript);
+        context.getPolyglotBindings().putMember("boundVar", new PreProMatrix3(matrix3));
+        Value res = context.getBindings(PreProLanguage.ID).getMember("bind").execute();
+        assertEquals("Matrix", res.getMetaObject().toString());
+        assertEquals(preProMatrix3.toString(), res.toString());
+    }
+
+    @Test
+    public void importPreProMatrix4() {
+        PreProMatrix4 preProMatrix4 = new PreProMatrix4(matrix4);
+        String preProScript = "function bind() returns mat4 { " +
+                "return import(\"boundVar\");" +
+                "}";
+        context.eval(PreProLanguage.ID, preProScript);
+        context.getPolyglotBindings().putMember("boundVar", new PreProMatrix4(matrix4));
+        Value res = context.getBindings(PreProLanguage.ID).getMember("bind").execute();
+        assertEquals("Matrix", res.getMetaObject().toString());
+        assertEquals(preProMatrix4.toString(), res.toString());
     }
 }
