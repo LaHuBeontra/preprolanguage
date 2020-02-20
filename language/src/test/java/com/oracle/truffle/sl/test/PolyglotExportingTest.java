@@ -57,23 +57,17 @@ import org.nd4j.linalg.factory.Nd4j;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
-public class PolyglotImportingTest {
+public class PolyglotExportingTest {
 
     private Context context;
     private INDArray constant;
-    private INDArray vector3;
-    private INDArray matrix3;
-    private INDArray matrix4;
 
     @Before
     public void setUp() {
         context = Context.newBuilder().allowPolyglotAccess(PolyglotAccess.ALL).build();
         constant = Nd4j.create(new double[]{42}, new int[]{1, 1});
-        vector3 = Nd4j.create(new double[]{42, 0, 1, 1, 0, 1, 5, 0, 1, 6, 0, 1}, new int[]{4, 3});
-        matrix3 = Nd4j.create(IntStream.range(1, 36 + 1).mapToDouble(i -> i).toArray(), new int[]{4, 3, 3});
-        matrix4 = Nd4j.create(IntStream.range(1, 64 + 1).mapToDouble(i -> i).toArray(), new int[]{4, 4, 4});
     }
 
     @After
@@ -84,52 +78,14 @@ public class PolyglotImportingTest {
     @Test
     public void importPreProConstant() {
         PreProConstant preProConstant = new PreProConstant(constant);
-        String preProScript = "function bind() returns const { " +
-                "return import(\"boundVar\");" +
+        String preProScript = "function main() { " +
+                "const fortyTwo = 42;" +
+                "export(\"42\", fortyTwo);" +
                 "}";
         context.eval(PreProLanguage.ID, preProScript);
-        context.getPolyglotBindings().putMember("boundVar", new PreProConstant(constant));
-        Value res = context.getBindings(PreProLanguage.ID).getMember("bind").execute();
+        Value mainExecuted = context.getBindings(PreProLanguage.ID).getMember("main").execute();
+        Value res = mainExecuted.getContext().getPolyglotBindings().getMember("42");
         assertEquals("Number", res.getMetaObject().toString());
         assertEquals(String.valueOf(preProConstant.getDoubleValue()), res.toString());
-    }
-
-    @Test
-    public void importPreProVector3() {
-        PreProVector3 preProVector3 = new PreProVector3(vector3);
-        String preProScript = "function bind() returns vec3 { " +
-                "return import(\"boundVar\");" +
-                "}";
-        context.eval(PreProLanguage.ID, preProScript);
-        context.getPolyglotBindings().putMember("boundVar", new PreProVector3(vector3));
-        Value res = context.getBindings(PreProLanguage.ID).getMember("bind").execute();
-        assertEquals("Vector", res.getMetaObject().toString());
-        assertEquals(preProVector3.toString(), res.toString());
-    }
-
-    @Test
-    public void importPreProMatrix3() {
-        PreProMatrix3 preProMatrix3 = new PreProMatrix3(matrix3);
-        String preProScript = "function bind() returns mat3 { " +
-                "return import(\"boundVar\");" +
-                "}";
-        context.eval(PreProLanguage.ID, preProScript);
-        context.getPolyglotBindings().putMember("boundVar", new PreProMatrix3(matrix3));
-        Value res = context.getBindings(PreProLanguage.ID).getMember("bind").execute();
-        assertEquals("Matrix", res.getMetaObject().toString());
-        assertEquals(preProMatrix3.toString(), res.toString());
-    }
-
-    @Test
-    public void importPreProMatrix4() {
-        PreProMatrix4 preProMatrix4 = new PreProMatrix4(matrix4);
-        String preProScript = "function bind() returns mat4 { " +
-                "return import(\"boundVar\");" +
-                "}";
-        context.eval(PreProLanguage.ID, preProScript);
-        context.getPolyglotBindings().putMember("boundVar", new PreProMatrix4(matrix4));
-        Value res = context.getBindings(PreProLanguage.ID).getMember("bind").execute();
-        assertEquals("Matrix", res.getMetaObject().toString());
-        assertEquals(preProMatrix4.toString(), res.toString());
     }
 }

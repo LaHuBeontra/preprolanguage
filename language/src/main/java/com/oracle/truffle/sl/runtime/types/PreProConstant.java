@@ -34,7 +34,7 @@ public final class PreProConstant extends PreProTimeSeries implements TruffleObj
     @Override
     @TruffleBoundary
     public String toString() {
-        return String.valueOf(getDoubleValue());
+        return timeSeries().shapeInfoToString();
     }
 
     public static PreProConstant not(PreProConstant value) {
