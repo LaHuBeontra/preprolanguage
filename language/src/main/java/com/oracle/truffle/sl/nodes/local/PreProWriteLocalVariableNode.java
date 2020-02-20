@@ -43,13 +43,13 @@ package com.oracle.truffle.sl.nodes.local;
 import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.nodes.NodeInfo;
 import com.oracle.truffle.api.nodes.UnexpectedResultException;
 import com.oracle.truffle.sl.PreProException;
 import com.oracle.truffle.sl.nodes.PreProExpressionNode;
 import com.oracle.truffle.sl.nodes.PreProStatementNode;
 import com.oracle.truffle.sl.nodes.util.PreProUnboxNodeGen;
-import com.oracle.truffle.sl.runtime.types.PreProConstant;
 import com.oracle.truffle.sl.runtime.types.VariableType;
 
 /**
@@ -81,30 +81,37 @@ public final class PreProWriteLocalVariableNode extends PreProStatementNode {
 
     @Override
     public void executeVoid(VirtualFrame frame) {
-        switch (VariableType.getTypeForText(type)) {
-//            case VEC3:
-//                break;
-//            case VEC4:
-//                break;
-//            case MAT:
-//                break;
-//            case MAT3:
-//                break;
-//            case MAT4:
-//                break;
-//            case SCAL:
-//                break;
-            case CONSTANT:
-                try {
-                    PreProConstant value = valueNode.executePreProConstant(frame);
-                    frame.getFrameDescriptor().setFrameSlotKind(frameSlot, FrameSlotKind.Object);
-                    frame.setObject(frameSlot, value);
-                } catch (UnexpectedResultException e) {
-                    throw PreProException.typeError(this, e.getResult());
-                }
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + VariableType.getTypeForText(type));
+        TruffleObject value;
+        try {
+            switch (VariableType.getTypeForText(type)) {
+                case VEC3:
+                    value = valueNode.executePreProVector3(frame);
+                    break;
+                case VEC4:
+                    value = valueNode.executePreProVector4(frame);
+                    break;
+                case MAT:
+                    value = valueNode.executePreProMatrix(frame);
+                    break;
+                case MAT3:
+                    value = valueNode.executePreProMatrix3(frame);
+                    break;
+                case MAT4:
+                    value = valueNode.executePreProMatrix4(frame);
+                    break;
+                case SCAL:
+                    value = valueNode.executePreProScalar(frame);
+                    break;
+                case CONSTANT:
+                    value = valueNode.executePreProConstant(frame);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + VariableType.getTypeForText(type));
+            }
+            frame.getFrameDescriptor().setFrameSlotKind(frameSlot, FrameSlotKind.Object);
+            frame.setObject(frameSlot, value);
+        } catch (UnexpectedResultException e) {
+            throw PreProException.typeError(this, e.getResult());
         }
     }
 
