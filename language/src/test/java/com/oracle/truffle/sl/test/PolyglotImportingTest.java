@@ -49,14 +49,26 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
+
+import java.util.stream.IntStream;
 
 public class PolyglotImportingTest {
 
     private Context context;
+    private INDArray constant;
+    private INDArray vector3;
+    private INDArray matrix3;
+    private INDArray matrix4;
 
     @Before
     public void setUp() {
         context = Context.newBuilder().allowPolyglotAccess(PolyglotAccess.ALL).build();
+        constant = Nd4j.create(new double[]{42}, new int[]{1, 1});
+        vector3 = Nd4j.create(new double[]{42, 0, 1, 1, 0, 1, 5, 0, 1, 6, 0, 1}, new int[]{4, 3});
+        matrix3 = Nd4j.create(IntStream.range(1, 36 + 1).mapToDouble(i -> i).toArray(), new int[]{4, 3, 3});
+        matrix4 = Nd4j.create(IntStream.range(1, 64 + 1).mapToDouble(i -> i).toArray(), new int[]{4, 4, 4});
     }
 
     @After
@@ -66,16 +78,13 @@ public class PolyglotImportingTest {
 
     @Test
     public void importPreProConstant() {
-        context.getPolyglotBindings().putMember("preProConst", new PreProConstant(41));
         String preProScript
                 = "function bind() returns const { " +
-                "const imported = importSymbol(\"preProConst\");" +
-                "return imported + 1;" +
+                "return import(\"boundVar\");" +
                 "}";
         context.eval(PreProLanguage.ID, preProScript);
-        Value bindFnc = context.getBindings(PreProLanguage.ID).getMember("bind");
-        Assert.assertTrue(bindFnc.canExecute());
-        Value res = bindFnc.execute();
+        context.getPolyglotBindings().putMember("boundVar", new PreProConstant(constant));
+        Value res = context.getBindings(PreProLanguage.ID).getMember("bind").execute();
         Assert.assertTrue(res.isNumber());
         Assert.assertEquals(42, res.asDouble(), 0);
     }

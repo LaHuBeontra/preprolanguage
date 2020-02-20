@@ -111,7 +111,7 @@ public final class PreProWriteLocalVariableNode extends PreProStatementNode {
             frame.getFrameDescriptor().setFrameSlotKind(frameSlot, FrameSlotKind.Object);
             frame.setObject(frameSlot, value);
         } catch (UnexpectedResultException e) {
-            throw PreProException.typeError(this, e.getResult());
+            throw PreProException.assignmentError(this, type);
         }
     }
 

@@ -76,20 +76,13 @@ public class PreProException extends RuntimeException implements TruffleExceptio
     }
 
     /**
-     * Provides a user-readable message for run-time type errors. PrePro is
+     * Provides a user-readable message for run-time type errors of operations. PrePro is
      * strongly typed, i.e., there are no automatic type conversions of values.
      */
     @TruffleBoundary
     public static PreProException typeError(Node operation, Object... values) {
         StringBuilder result = new StringBuilder();
-        result.append("Type error");
-
-        if (operation != null) {
-            SourceSection ss = operation.getEncapsulatingSourceSection();
-            if (ss != null && ss.isAvailable()) {
-                result.append(" at ").append(ss.getSource().getName()).append(" line ").append(ss.getStartLine()).append(" col ").append(ss.getStartColumn());
-            }
-        }
+        appendTypeErrorMessage(operation, result);
 
         result.append(": operation");
         if (operation != null) {
@@ -120,6 +113,33 @@ public class PreProException extends RuntimeException implements TruffleExceptio
             }
         }
         return new PreProException(result.toString(), operation);
+    }
+
+    /**
+     * Provides a user-readable message for run-time type errors of assignments. PrePro is
+     * statically typed, i.e., a value's type needs to be specifically defined.
+     */
+    @TruffleBoundary
+    public static PreProException assignmentError(Node operation, String declared) {
+        StringBuilder result = new StringBuilder();
+        appendTypeErrorMessage(operation, result);
+
+        result.append(": trying to assign wrong type to ");
+        if (declared != null) {
+            result.append(" \"").append(declared).append("\"");
+        }
+
+        return new PreProException(result.toString(), operation);
+    }
+
+    private static void appendTypeErrorMessage(Node operation, StringBuilder result) {
+        result.append("Type error");
+        if (operation != null) {
+            SourceSection ss = operation.getEncapsulatingSourceSection();
+            if (ss != null && ss.isAvailable()) {
+                result.append(" at ").append(ss.getSource().getName()).append(" line ").append(ss.getStartLine()).append(" col ").append(ss.getStartColumn());
+            }
+        }
     }
 
     /**
