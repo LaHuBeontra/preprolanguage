@@ -11,49 +11,13 @@ abstract class PreProTimeSeries {
         this.ndArray = ndArray;
     }
 
-    INDArray timeSeries() {
+    public INDArray timeSeries() {
         return ndArray;
     }
 
-    int amountTimeElements() {
+    public int amountTimeElements() {
         return ndArray.shape()[0];
     }
-
-//    public PreProTimeSeries add(PreProTimeSeries right) {
-//        throw new RuntimeException("Cannot add " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
-//    }
-//
-//    public PreProTimeSeries sub(PreProTimeSeries right) {
-//        throw new RuntimeException("Cannot subtract " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
-//    }
-//
-//    public PreProTimeSeries mul(PreProTimeSeries right) {
-//        throw new RuntimeException("Cannot multiply " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
-//    }
-//
-//    public PreProTimeSeries div(PreProTimeSeries right) {
-//        throw new RuntimeException("Cannot divide " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
-//    }
-//
-//    public PreProScalar isEqualTo(PreProTimeSeries right) {
-//        throw new RuntimeException("Cannot compare " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
-//    }
-//
-//    public PreProScalar isLessThan(PreProTimeSeries right) {
-//        throw new RuntimeException("Cannot compare " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
-//    }
-//
-//    public PreProScalar isLessOrEqualThan(PreProTimeSeries right) {
-//        throw new RuntimeException("Cannot compare " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
-//    }
-//
-//    public PreProScalar isGreaterThan(PreProTimeSeries right) {
-//        throw new RuntimeException("Cannot compare " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
-//    }
-//
-//    public PreProScalar isGreaterOrEqualThan(PreProTimeSeries right) {
-//        throw new RuntimeException("Cannot compare " + this.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
-//    }
 
     INDArray multiplyMatrixWithMatrix(PreProMatrix left, PreProMatrix right, int dimension) {
         INDArray result = Nd4j.create(left.amountTimeElements(), dimension, dimension);

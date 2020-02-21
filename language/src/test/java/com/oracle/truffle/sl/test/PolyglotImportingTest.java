@@ -40,7 +40,9 @@
  */
 package com.oracle.truffle.sl.test;
 
+import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.sl.PreProLanguage;
+import com.oracle.truffle.sl.runtime.PreProFunction;
 import com.oracle.truffle.sl.runtime.types.PreProConstant;
 import com.oracle.truffle.sl.runtime.types.PreProMatrix3;
 import com.oracle.truffle.sl.runtime.types.PreProMatrix4;
@@ -54,6 +56,7 @@ import org.junit.Test;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
+import java.lang.reflect.Field;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertEquals;
@@ -69,7 +72,9 @@ public class PolyglotImportingTest {
 
     @Before
     public void setUp() {
-        context = Context.newBuilder().allowPolyglotAccess(PolyglotAccess.ALL).build();
+        context = Context.newBuilder().allowExperimentalOptions(true).allowPolyglotAccess(PolyglotAccess.ALL).allowAllAccess(true).build();
+        context.eval(PreProLanguage.ID, "function main() {}"); // initialize context
+        context.enter();
         constant = Nd4j.create(new double[]{42}, new int[]{1, 1});
         vector3 = Nd4j.create(new double[]{42, 0, 1, 1, 0, 1, 5, 0, 1, 6, 0, 1}, new int[]{4, 3});
         matrix3 = Nd4j.create(IntStream.range(1, 36 + 1).mapToDouble(i -> i).toArray(), new int[]{4, 3, 3});
@@ -78,6 +83,7 @@ public class PolyglotImportingTest {
 
     @After
     public void tearDown() {
+        context.leave();
         context.close();
     }
 
@@ -95,16 +101,23 @@ public class PolyglotImportingTest {
     }
 
     @Test
-    public void importPreProVector3() {
+    public void importPreProVector3() throws Exception {
         PreProVector3 preProVector3 = new PreProVector3(vector3);
         String preProScript = "function bind() returns vec3 { " +
                 "return import(\"boundVar\");" +
                 "}";
         context.eval(PreProLanguage.ID, preProScript);
-        context.getPolyglotBindings().putMember("boundVar", new PreProVector3(vector3));
-        Value res = context.getBindings(PreProLanguage.ID).getMember("bind").execute();
-        assertEquals("Vector", res.getMetaObject().toString());
-        assertEquals(preProVector3.toString(), res.toString());
+        context.getPolyglotBindings().putMember("boundVar", preProVector3);
+        Value bindFunctionPolyglotValue = context.getBindings(PreProLanguage.ID).getMember("bind");
+        Field bindFunctionReceiver = bindFunctionPolyglotValue.getClass().getDeclaredField("receiver");
+        bindFunctionReceiver.setAccessible(true);
+        Object bindFunctionObject = bindFunctionReceiver.get(bindFunctionPolyglotValue);
+
+        PreProFunction bindFunction = (PreProFunction) bindFunctionObject;
+        Object obj = InteropLibrary.getFactory().getUncached().execute(bindFunction);
+
+        assertTrue(obj instanceof PreProVector3);
+        assertEquals(preProVector3.timeSeries(), ((PreProVector3) obj).timeSeries());
     }
 
     @Test
