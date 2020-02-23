@@ -73,7 +73,7 @@ public class UsePreProTypesTest extends PreProAbstractTest {
                 context.exportSymbol("imported", entered)
                         .execute("function main() {export(\"exported\", import(\"imported\"));}");
         PreProConstant returned = (PreProConstant) result.importSymbol("exported");
-        assertEquals(entered.timeSeries(), returned.timeSeries());
+        assertEquals(entered, returned);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class UsePreProTypesTest extends PreProAbstractTest {
                 context.exportSymbol("imported", entered)
                         .execute("function main() {export(\"exported\", import(\"imported\"));}");
         PreProVector3 returned = (PreProVector3) result.importSymbol("exported");
-        assertEquals(entered.timeSeries(), returned.timeSeries());
+        assertEquals(entered, returned);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class UsePreProTypesTest extends PreProAbstractTest {
                 context.exportSymbol("imported", entered)
                         .execute("function main() {export(\"exported\", import(\"imported\"));}");
         PreProMatrix3 returned = (PreProMatrix3) result.importSymbol("exported");
-        assertEquals(entered.timeSeries(), returned.timeSeries());
+        assertEquals(entered, returned);
     }
 
     @Test
@@ -103,6 +103,6 @@ public class UsePreProTypesTest extends PreProAbstractTest {
                 context.exportSymbol("imported", entered)
                         .execute("function main() {export(\"exported\", import(\"imported\"));}");
         PreProMatrix4 returned = (PreProMatrix4) result.importSymbol("exported");
-        assertEquals(entered.timeSeries(), returned.timeSeries());
+        assertEquals(entered, returned);
     }
 }

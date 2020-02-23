@@ -9,15 +9,19 @@ import com.oracle.truffle.api.library.ExportMessage;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
+import java.util.Objects;
+
 @ExportLibrary(InteropLibrary.class)
-public final class PreProConstant extends PreProTimeSeries implements TruffleObject {
+public final class PreProConstant implements TruffleObject {
+
+    private final INDArray ndArray;
 
     // PrePro has no Boolean type, this is the replacement
     public static final PreProConstant TRUE = new PreProConstant(Nd4j.create(new int[]{1, 1}, new double[]{1}));
     public static final PreProConstant FALSE = new PreProConstant(Nd4j.create(new int[]{1, 1}, new double[]{0}));
 
     public PreProConstant(INDArray ndArray) {
-        super(ndArray);
+        this.ndArray = ndArray;
         if (ndArray.length() != 1) {
             throw new RuntimeException("Can only add Constant with double value.");
         }
@@ -31,10 +35,12 @@ public final class PreProConstant extends PreProTimeSeries implements TruffleObj
         this(Nd4j.create(new double[]{Double.parseDouble(value)}, new int[]{1, 1}));
     }
 
-    @Override
-    @TruffleBoundary
-    public String toString() {
-        return timeSeries().shapeInfoToString();
+    public INDArray timeSeries() {
+        return ndArray;
+    }
+
+    public int amountTimeElements() {
+        return ndArray.shape()[0];
     }
 
     public static PreProConstant not(PreProConstant value) {
@@ -86,6 +92,25 @@ public final class PreProConstant extends PreProTimeSeries implements TruffleObj
     @TruffleBoundary
     public PreProVector3 div(PreProVector3 right) {
         return right.div(this);
+    }
+
+    @Override
+    @TruffleBoundary
+    public String toString() {
+        return timeSeries().shapeInfoToString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PreProConstant)) return false;
+        PreProConstant that = (PreProConstant) o;
+        return ndArray.equals(that.ndArray);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ndArray);
     }
 
     @SuppressWarnings("static-method")

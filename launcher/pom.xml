@@ -43,7 +43,6 @@
               <finalName>prepro-launcher</finalName>
               <artifactSet>
                 <excludes>
-                  <exclude>junit:junit</exclude>
                   <exclude>com.oracle.truffle:truffle-api</exclude>
                   <exclude>com.oracle.truffle:truffle-dsl-processor</exclude>
                   <exclude>com.oracle.truffle:truffle-tck</exclude>

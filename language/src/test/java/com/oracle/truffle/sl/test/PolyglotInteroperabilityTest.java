@@ -71,7 +71,7 @@ public class PolyglotInteroperabilityTest extends PreProAbstractTest {
                 context.exportSymbol("imported", entered)
                         .execute("function main() {export(\"exported\", import(\"imported\"));}");
         PreProConstant returned = (PreProConstant) result.importSymbol("exported");
-        assertEquals(entered.timeSeries(), returned.timeSeries());
+        assertEquals(entered, returned);
     }
 
     @Test

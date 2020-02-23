@@ -7,16 +7,28 @@ import com.oracle.truffle.api.library.ExportLibrary;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
+import java.util.Objects;
+
 @ExportLibrary(InteropLibrary.class)
-public class PreProScalar extends PreProTimeSeries implements TruffleObject {
+public class PreProScalar implements TruffleObject {
+
+    private final INDArray ndArray;
 
     public PreProScalar(INDArray ndArray) {
-        super(ndArray);
+        this.ndArray = ndArray;
         int size = ndArray.shape()[1];
         if (ndArray.shape().length != 2 || size != 1) {
             throw new RuntimeException("The given Scalar has the size "
                     + size + ", must be 1.");
         }
+    }
+
+    public INDArray timeSeries() {
+        return ndArray;
+    }
+
+    public int amountTimeElements() {
+        return ndArray.shape()[0];
     }
 
     @TruffleBoundary
@@ -37,12 +49,6 @@ public class PreProScalar extends PreProTimeSeries implements TruffleObject {
     @TruffleBoundary
     public PreProScalar div(PreProScalar right) {
         return new PreProScalar(timeSeries().div(right.timeSeries()));
-    }
-
-    @Override
-    @TruffleBoundary
-    public String toString() {
-        return timeSeries().shapeInfoToString();
     }
 
     @TruffleBoundary
@@ -117,5 +123,24 @@ public class PreProScalar extends PreProTimeSeries implements TruffleObject {
         }
 
         return new PreProScalar(Nd4j.create(result, new int[]{amountTimeElements(), 1}));
+    }
+
+    @Override
+    @TruffleBoundary
+    public String toString() {
+        return timeSeries().shapeInfoToString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PreProScalar)) return false;
+        PreProScalar that = (PreProScalar) o;
+        return ndArray.equals(that.ndArray);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ndArray);
     }
 }

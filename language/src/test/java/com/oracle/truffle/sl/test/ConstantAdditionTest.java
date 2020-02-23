@@ -43,7 +43,6 @@ package com.oracle.truffle.sl.test;
 import com.oracle.truffle.sl.interop.PreProPolyglotContext;
 import com.oracle.truffle.sl.runtime.types.PreProConstant;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -72,7 +71,7 @@ public class ConstantAdditionTest extends PreProAbstractTest {
                 context.exportSymbol("imported", entered)
                         .execute("function main() {export(\"exported\", import(\"imported\") + 1);}");
         PreProConstant returned = (PreProConstant) result.importSymbol("exported");
-        assertNotEquals(entered.timeSeries(), returned.timeSeries());
+        assertNotEquals(entered, returned);
         assertEquals(constant.add(1), returned.timeSeries());
     }
 
@@ -84,7 +83,7 @@ public class ConstantAdditionTest extends PreProAbstractTest {
                 context.exportSymbol("imported", entered)
                         .execute("function main() {export(\"exported\", import(\"imported\") + 1);}");
         PreProConstant returned = (PreProConstant) result.importSymbol("exported");
-        assertNotEquals(entered.timeSeries(), returned.timeSeries());
+        assertNotEquals(entered, returned);
         assertEquals(constant.add(1), returned.timeSeries());
     }
 }
