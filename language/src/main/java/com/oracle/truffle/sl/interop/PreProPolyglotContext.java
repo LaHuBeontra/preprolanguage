@@ -8,14 +8,13 @@ import org.graalvm.polyglot.PolyglotAccess;
 public final class PreProPolyglotContext {
 
     private static final String ID = PreProLanguage.ID;
-    private final Context polyglotContext;
-    private final PreProContext runtimeContext;
+    private Context languageContext;
+    private PreProContext runtimeContext;
 
     public PreProPolyglotContext() {
-        polyglotContext = Context.newBuilder().allowPolyglotAccess(PolyglotAccess.ALL).build();
-        polyglotContext.initialize(ID);
-        polyglotContext.enter();
-
+        languageContext = Context.newBuilder().allowPolyglotAccess(PolyglotAccess.ALL).build();
+        languageContext.initialize(ID);
+        languageContext.enter();
         runtimeContext = PreProLanguage.getCurrentContext();
     }
 
@@ -25,15 +24,15 @@ public final class PreProPolyglotContext {
     }
 
     public PreProPolyglotResult execute(String preProProgram) {
-        polyglotContext.eval(ID, preProProgram);
-        polyglotContext.getBindings(ID).getMember("main").execute();
+        languageContext.eval(ID, preProProgram);
+        languageContext.getBindings(ID).getMember("main").execute();
         return new PreProPolyglotResult();
     }
 
     public final void cleanup() {
-        if (polyglotContext != null) {
-            polyglotContext.leave();
-            polyglotContext.close();
+        if (languageContext != null) {
+            languageContext.leave();
+            languageContext.close();
         }
     }
 

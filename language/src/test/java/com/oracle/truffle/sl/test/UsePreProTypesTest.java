@@ -42,17 +42,19 @@ package com.oracle.truffle.sl.test;
 
 import com.oracle.truffle.sl.interop.PreProPolyglotContext;
 import com.oracle.truffle.sl.runtime.types.PreProConstant;
+import com.oracle.truffle.sl.runtime.types.PreProMatrix3;
+import com.oracle.truffle.sl.runtime.types.PreProMatrix4;
+import com.oracle.truffle.sl.runtime.types.PreProVector3;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import java.util.stream.IntStream;
 
-public class ConstantAdditionTest extends PreProAbstractTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class UsePreProTypesTest extends PreProAbstractTest {
 
     @BeforeEach
     void setUp() {
@@ -65,26 +67,42 @@ public class ConstantAdditionTest extends PreProAbstractTest {
     }
 
     @Test
-    public void increment3() {
-        INDArray constant = Nd4j.create(new double[]{3}, new int[]{1, 1});
-        PreProConstant entered = new PreProConstant(constant);
+    public void importPreProConstant() {
+        PreProConstant entered = new PreProConstant(Nd4j.create(new double[]{42}, new int[]{1, 1}));
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("imported", entered)
-                        .execute("function main() {export(\"exported\", import(\"imported\") + 1);}");
+                        .execute("function main() {export(\"exported\", import(\"imported\"));}");
         PreProConstant returned = (PreProConstant) result.importSymbol("exported");
-        assertNotEquals(entered.timeSeries(), returned.timeSeries());
-        assertEquals(constant.add(1), returned.timeSeries());
+        assertEquals(entered.timeSeries(), returned.timeSeries());
     }
 
     @Test
-    public void increment1234567() {
-        INDArray constant = Nd4j.create(new double[]{1234567}, new int[]{1, 1});
-        PreProConstant entered = new PreProConstant(constant);
+    public void importPreProVector3() {
+        PreProVector3 entered = new PreProVector3(Nd4j.create(new double[]{42, 0, 1, 1, 0, 1, 5, 0, 1, 6, 0, 1}, new int[]{4, 3}));
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("imported", entered)
-                        .execute("function main() {export(\"exported\", import(\"imported\") + 1);}");
-        PreProConstant returned = (PreProConstant) result.importSymbol("exported");
-        assertNotEquals(entered.timeSeries(), returned.timeSeries());
-        assertEquals(constant.add(1), returned.timeSeries());
+                        .execute("function main() {export(\"exported\", import(\"imported\"));}");
+        PreProVector3 returned = (PreProVector3) result.importSymbol("exported");
+        assertEquals(entered.timeSeries(), returned.timeSeries());
+    }
+
+    @Test
+    public void importPreProMatrix3() {
+        PreProMatrix3 entered = new PreProMatrix3(Nd4j.create(IntStream.range(1, 36 + 1).mapToDouble(i -> i).toArray(), new int[]{4, 3, 3}));
+        PreProPolyglotContext.PreProPolyglotResult result =
+                context.exportSymbol("imported", entered)
+                        .execute("function main() {export(\"exported\", import(\"imported\"));}");
+        PreProMatrix3 returned = (PreProMatrix3) result.importSymbol("exported");
+        assertEquals(entered.timeSeries(), returned.timeSeries());
+    }
+
+    @Test
+    public void importPreProMatrix4() {
+        PreProMatrix4 entered = new PreProMatrix4(Nd4j.create(IntStream.range(1, 64 + 1).mapToDouble(i -> i).toArray(), new int[]{4, 4, 4}));
+        PreProPolyglotContext.PreProPolyglotResult result =
+                context.exportSymbol("imported", entered)
+                        .execute("function main() {export(\"exported\", import(\"imported\"));}");
+        PreProMatrix4 returned = (PreProMatrix4) result.importSymbol("exported");
+        assertEquals(entered.timeSeries(), returned.timeSeries());
     }
 }
