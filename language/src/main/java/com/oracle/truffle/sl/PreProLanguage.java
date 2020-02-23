@@ -400,8 +400,4 @@ public final class PreProLanguage extends TruffleLanguage<PreProContext> {
     }
 
     private static final List<NodeFactory<? extends PreProBuiltinNode>> EXTERNAL_BUILTINS = Collections.synchronizedList(new ArrayList<>());
-
-    public static void installBuiltin(NodeFactory<? extends PreProBuiltinNode> builtin) {
-        EXTERNAL_BUILTINS.add(builtin);
-    }
 }

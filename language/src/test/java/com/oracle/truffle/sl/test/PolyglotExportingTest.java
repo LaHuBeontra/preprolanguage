@@ -41,51 +41,81 @@
 package com.oracle.truffle.sl.test;
 
 import com.oracle.truffle.sl.PreProLanguage;
+import com.oracle.truffle.sl.interop.PreProPolyglotContext;
+import com.oracle.truffle.sl.interop.PreProPolyglotContext.PreProPolyglotResult;
+import com.oracle.truffle.sl.runtime.PreProContext;
 import com.oracle.truffle.sl.runtime.types.PreProConstant;
-import com.oracle.truffle.sl.runtime.types.PreProMatrix3;
-import com.oracle.truffle.sl.runtime.types.PreProMatrix4;
-import com.oracle.truffle.sl.runtime.types.PreProVector3;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotAccess;
-import org.graalvm.polyglot.Value;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
-import java.util.stream.IntStream;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotEquals;
 
 public class PolyglotExportingTest {
 
-    private Context context;
+    private static Context context;
     private INDArray constant;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        context = Context.newBuilder().allowPolyglotAccess(PolyglotAccess.ALL).build();
         constant = Nd4j.create(new double[]{42}, new int[]{1, 1});
     }
 
-    @After
-    public void tearDown() {
+    @AfterAll
+    static void tearDown() {
         context.close();
     }
 
+//    @Test
+//    public void importPreProConstant() {
+//        PreProConstant preProConstant = new PreProConstant(constant);
+//        String preProScript = "function main() { " +
+//                "const fortyTwo = 42;" +
+//                "export(\"42\", fortyTwo);" +
+//                "}";
+//        context.eval(PreProLanguage.ID, preProScript);
+//        Value mainExecuted = context.getBindings(PreProLanguage.ID).getMember("main").execute();
+//        Value res = mainExecuted.getContext().getPolyglotBindings().getMember("42");
+//        assertEquals("Number", res.getMetaObject().toString());
+//        assertEquals(String.valueOf(preProConstant.getDoubleValue()), res.toString());
+//    }
+
     @Test
-    public void importPreProConstant() {
+    public void testingTest() {
+        context = Context.newBuilder().allowPolyglotAccess(PolyglotAccess.ALL).build();
+        context.initialize(PreProLanguage.ID);
+        context.enter();
+        PreProContext currentContext = PreProLanguage.getCurrentContext();
+
         PreProConstant preProConstant = new PreProConstant(constant);
+        currentContext.exportSymbol("bindVar", preProConstant);
         String preProScript = "function main() { " +
-                "const fortyTwo = 42;" +
-                "export(\"42\", fortyTwo);" +
+                "const temp = import(\"bindVar\") + 1;" +
+                "export(\"incremented\", temp);" +
                 "}";
         context.eval(PreProLanguage.ID, preProScript);
-        Value mainExecuted = context.getBindings(PreProLanguage.ID).getMember("main").execute();
-        Value res = mainExecuted.getContext().getPolyglotBindings().getMember("42");
-        assertEquals("Number", res.getMetaObject().toString());
-        assertEquals(String.valueOf(preProConstant.getDoubleValue()), res.toString());
+        context.getBindings(PreProLanguage.ID).getMember("main").execute();
+
+        Object obj = currentContext.importSymbol("incremented");
+        assertNotEquals(preProConstant.timeSeries(),
+                ((PreProConstant) obj).timeSeries());
+    }
+
+    @Test
+    public void testingTest2() {
+        PreProConstant entered = new PreProConstant(constant);
+        PreProPolyglotResult result =
+                new PreProPolyglotContext()
+                        .exportSymbol("bindVar", entered)
+                        .execute("function main() { " +
+                                "const temp = import(\"bindVar\") + 1;" +
+                                "export(\"incremented\", temp);" +
+                                "}");
+        PreProConstant returned = (PreProConstant) result.importSymbol("incremented");
+        assertNotEquals(entered.timeSeries(), returned.timeSeries());
     }
 }

@@ -40,7 +40,6 @@
  */
 package com.oracle.truffle.sl.runtime;
 
-import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.Scope;
@@ -241,20 +240,19 @@ public final class PreProContext {
         return new PreProConstant((Double) a);
     }
 
-    public CallTarget parse(Source source) {
-        return env.parsePublic(source);
+    /**
+     * Exports an object to the polyglot bindings
+     * to access it within a PrePro program.
+     */
+    public void exportSymbol(String symbolName, Object value) {
+        env.exportSymbol(symbolName, value);
     }
 
     /**
-     * Returns an object that contains bindings that were exported across all used languages. To
-     * read or write from this object the {@link TruffleObject interop} API can be used.
+     * Imports an object that was exported to the
+     * polyglot bindings from within a PrePro program.
      */
-    public TruffleObject getPolyglotBindings() {
-        return (TruffleObject) env.getPolyglotBindings();
+    public Object importSymbol(String symbolName) {
+        return env.importSymbol(symbolName);
     }
-
-    public static PreProContext getCurrent() {
-        return PreProLanguage.getCurrentContext();
-    }
-
 }

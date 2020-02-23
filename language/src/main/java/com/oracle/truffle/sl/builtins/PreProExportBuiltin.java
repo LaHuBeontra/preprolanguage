@@ -42,11 +42,6 @@ package com.oracle.truffle.sl.builtins;
 
 import com.oracle.truffle.api.dsl.CachedContext;
 import com.oracle.truffle.api.dsl.Specialization;
-import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.interop.UnknownIdentifierException;
-import com.oracle.truffle.api.interop.UnsupportedMessageException;
-import com.oracle.truffle.api.interop.UnsupportedTypeException;
-import com.oracle.truffle.api.library.CachedLibrary;
 import com.oracle.truffle.api.nodes.NodeInfo;
 import com.oracle.truffle.sl.PreProException;
 import com.oracle.truffle.sl.PreProLanguage;
@@ -60,14 +55,11 @@ public abstract class PreProExportBuiltin extends PreProBuiltinNode {
 
     @Specialization
     public Object exportSymbol(String symbol,
-                             Object value,
-                             @CachedLibrary(limit = "3") InteropLibrary arrays,
-                             @CachedContext(PreProLanguage.class) PreProContext context) {
+                               Object value,
+                               @CachedContext(PreProLanguage.class) PreProContext context) {
         try {
-            arrays.writeMember(context.getPolyglotBindings(), symbol, value);
+            context.getEnv().exportSymbol(symbol, value);
             return value;
-        } catch (UnsupportedMessageException | UnknownIdentifierException | UnsupportedTypeException e) {
-            throw PreProException.typeError(this, symbol, value);
         } catch (SecurityException e) {
             throw new PreProException("No polyglot access allowed.", this);
         }
