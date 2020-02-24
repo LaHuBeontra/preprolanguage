@@ -45,8 +45,7 @@ import com.oracle.truffle.sl.runtime.types.PreProConstant;
 import com.oracle.truffle.sl.runtime.types.PreProMatrix3;
 import com.oracle.truffle.sl.runtime.types.PreProMatrix4;
 import com.oracle.truffle.sl.runtime.types.PreProVector3;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.nd4j.linalg.factory.Nd4j;
 
@@ -54,17 +53,8 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@DisplayName("Tests if PrePro Types can all be used")
 public class UsePreProTypesTest extends PreProAbstractTest {
-
-    @BeforeEach
-    void setUp() {
-        setup();
-    }
-
-    @AfterEach
-    void tearDown() {
-        cleanup();
-    }
 
     @Test
     public void importPreProConstant() {

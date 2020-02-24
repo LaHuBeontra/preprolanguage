@@ -42,8 +42,7 @@ package com.oracle.truffle.sl.test;
 
 import com.oracle.truffle.sl.interop.PreProPolyglotContext;
 import com.oracle.truffle.sl.runtime.types.PreProConstant;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
@@ -51,17 +50,8 @@ import org.nd4j.linalg.factory.Nd4j;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+@DisplayName("Tests for PrePro Addition")
 public class ConstantAdditionTest extends PreProAbstractTest {
-
-    @BeforeEach
-    void setUp() {
-        setup();
-    }
-
-    @AfterEach
-    void tearDown() {
-        cleanup();
-    }
 
     @Test
     public void increment3() {

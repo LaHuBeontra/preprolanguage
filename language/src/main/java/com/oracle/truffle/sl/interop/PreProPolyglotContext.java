@@ -4,6 +4,9 @@ import com.oracle.truffle.sl.PreProLanguage;
 import com.oracle.truffle.sl.runtime.PreProContext;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotAccess;
+import org.graalvm.polyglot.Source;
+
+import java.net.URL;
 
 public final class PreProPolyglotContext {
 
@@ -23,8 +26,14 @@ public final class PreProPolyglotContext {
         return this;
     }
 
-    public PreProPolyglotResult execute(String preProProgram) {
-        languageContext.eval(ID, preProProgram);
+    public PreProPolyglotResult execute(String literalPreProProgram) {
+        languageContext.eval(ID, literalPreProProgram);
+        languageContext.getBindings(ID).getMember("main").execute();
+        return new PreProPolyglotResult();
+    }
+
+    public PreProPolyglotResult execute(URL preProFileUrl) {
+        languageContext.eval(Source.newBuilder(ID, preProFileUrl).buildLiteral());
         languageContext.getBindings(ID).getMember("main").execute();
         return new PreProPolyglotResult();
     }

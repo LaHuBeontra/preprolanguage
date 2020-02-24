@@ -43,8 +43,6 @@ package com.oracle.truffle.sl.test;
 import com.oracle.truffle.sl.interop.PreProPolyglotContext.PreProPolyglotResult;
 import com.oracle.truffle.sl.runtime.types.PreProConstant;
 import com.oracle.truffle.sl.runtime.types.PreProVector3;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.nd4j.linalg.factory.Nd4j;
@@ -53,16 +51,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Tests for Java <-> PrePro Polyglot Interoperability")
 public class PolyglotInteroperabilityTest extends PreProAbstractTest {
-
-    @BeforeEach
-    void setUp() {
-        setup();
-    }
-
-    @AfterEach
-    void tearDown() {
-        cleanup();
-    }
 
     @Test
     public void interopWorksSimple() {
