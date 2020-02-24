@@ -1,6 +1,5 @@
-package com.oracle.truffle.sl.interop;
+package com.oracle.truffle.sl;
 
-import com.oracle.truffle.sl.PreProLanguage;
 import com.oracle.truffle.sl.runtime.PreProContext;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotAccess;

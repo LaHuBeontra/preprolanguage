@@ -40,7 +40,7 @@
  */
 package com.oracle.truffle.sl.test;
 
-import com.oracle.truffle.sl.interop.PreProPolyglotContext;
+import com.oracle.truffle.sl.PreProPolyglotContext;
 import com.oracle.truffle.sl.runtime.types.PreProConstant;
 import com.oracle.truffle.sl.runtime.types.PreProMatrix3;
 import com.oracle.truffle.sl.runtime.types.PreProMatrix4;

@@ -40,7 +40,7 @@
  */
 package com.oracle.truffle.sl.test;
 
-import com.oracle.truffle.sl.interop.PreProPolyglotContext.PreProPolyglotResult;
+import com.oracle.truffle.sl.PreProPolyglotContext.PreProPolyglotResult;
 import com.oracle.truffle.sl.runtime.types.PreProConstant;
 import com.oracle.truffle.sl.runtime.types.PreProVector3;
 import org.junit.jupiter.api.DisplayName;

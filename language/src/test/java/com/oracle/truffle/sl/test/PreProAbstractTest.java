@@ -1,6 +1,6 @@
 package com.oracle.truffle.sl.test;
 
-import com.oracle.truffle.sl.interop.PreProPolyglotContext;
+import com.oracle.truffle.sl.PreProPolyglotContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
