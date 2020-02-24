@@ -79,6 +79,8 @@ import com.oracle.truffle.sl.nodes.local.PreProReadLocalVariableNode;
 import com.oracle.truffle.sl.nodes.local.PreProReadLocalVariableNodeGen;
 import com.oracle.truffle.sl.nodes.local.PreProWriteLocalVariableNode;
 import com.oracle.truffle.sl.nodes.util.PreProUnboxNodeGen;
+import com.oracle.truffle.sl.runtime.PreProUndefinedNameException;
+import com.oracle.truffle.sl.runtime.PreProVariableAlreadyDefinedException;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.Token;
 
@@ -363,7 +365,11 @@ public class PreProNodeFactory {
         if (nameNode == null || valueNode == null) {
             return null;
         }
-        return createAssignment(typeToken, nameNode, valueNode, null);
+        if (typeToken == null) {
+            return createAssignmentToExisting(nameNode, valueNode);
+        } else {
+            return createAssignment(typeToken, nameNode, valueNode, null);
+        }
     }
 
     /**
@@ -374,14 +380,31 @@ public class PreProNodeFactory {
      * @param argumentIndex null or index of the argument the assignment is assigning
      * @return An SLExpressionNode for the given parameters. null if nameNode or valueNode is null.
      */
-    public PreProWriteLocalVariableNode createAssignment(Token typeToken, PreProExpressionNode nameNode, PreProExpressionNode valueNode, Integer argumentIndex) {
+    public PreProWriteLocalVariableNode createAssignment(Token typeToken, PreProExpressionNode nameNode, PreProExpressionNode valueNode, Integer argumentIndex) throws PreProVariableAlreadyDefinedException {
         String name = ((PreProStringLiteralNode) nameNode).executeGeneric(null);
-        FrameSlot frameSlot = frameDescriptor.findOrAddFrameSlot(
+        if (lexicalScope.locals.containsKey(name)) throw PreProVariableAlreadyDefinedException.variableAlreadyExists(nameNode, name);
+        FrameSlot frameSlot = frameDescriptor.addFrameSlot(
                 name,
                 argumentIndex,
                 FrameSlotKind.Illegal);
         lexicalScope.locals.put(name, frameSlot);
         final PreProWriteLocalVariableNode result = new PreProWriteLocalVariableNode(frameSlot, typeToken.getText(), valueNode);
+
+        if (valueNode.hasSource()) {
+            final int start = nameNode.getSourceCharIndex();
+            final int length = valueNode.getSourceEndIndex() - start;
+            result.setSourceSection(start, length);
+        }
+        result.addStatementTag();
+
+        return result;
+    }
+
+    public PreProWriteLocalVariableNode createAssignmentToExisting(PreProExpressionNode nameNode, PreProExpressionNode valueNode) throws PreProUndefinedNameException {
+        String name = ((PreProStringLiteralNode) nameNode).executeGeneric(null);
+        if (!lexicalScope.locals.containsKey(name)) throw PreProUndefinedNameException.undefinedVariable(nameNode, name);
+        FrameSlot frameSlot = frameDescriptor.findFrameSlot(name);
+        final PreProWriteLocalVariableNode result = new PreProWriteLocalVariableNode(frameSlot, valueNode);
 
         if (valueNode.hasSource()) {
             final int start = nameNode.getSourceCharIndex();

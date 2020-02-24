@@ -26,6 +26,13 @@ public enum VariableType {
                 .orElseThrow(() -> new RuntimeException("Type " + text + " not known."));
     }
 
+    public static VariableType getTypeForClass(Class clazz) {
+        return Arrays.stream(VariableType.values())
+                .filter(type -> type.getVariableClass().equals(clazz))
+                .findAny()
+                .orElseThrow(() -> new RuntimeException("Class " + clazz + " not known."));
+    }
+
     public String getText() {
         return text;
     }

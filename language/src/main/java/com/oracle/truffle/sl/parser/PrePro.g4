@@ -189,7 +189,7 @@ statement returns [PreProStatementNode result]
 ;
 
 assignment returns [PreProStatementNode result]:
-TYPE
+TYPE?
 IDENTIFIER                        { PreProExpressionNode assignmentName = factory.createStringLiteral($IDENTIFIER, false); }
 '='
 (

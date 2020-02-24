@@ -42,6 +42,7 @@ package com.oracle.truffle.sl.nodes.local;
 
 import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotKind;
+import com.oracle.truffle.api.frame.FrameSlotTypeException;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.nodes.NodeInfo;
@@ -79,40 +80,83 @@ public final class PreProWriteLocalVariableNode extends PreProStatementNode {
         this.valueNode = PreProUnboxNodeGen.create(valueNode);
     }
 
+    public PreProWriteLocalVariableNode(FrameSlot frameSlot, PreProExpressionNode valueNode) {
+        this.frameSlot = frameSlot;
+        this.valueNode = PreProUnboxNodeGen.create(valueNode);
+    }
+
     @Override
     public void executeVoid(VirtualFrame frame) {
-        TruffleObject value;
         try {
-            switch (VariableType.getTypeForText(type)) {
-                case VEC3:
-                    value = valueNode.executePreProVector3(frame);
-                    break;
-                case VEC4:
-                    value = valueNode.executePreProVector4(frame);
-                    break;
-                case MAT:
-                    value = valueNode.executePreProMatrix(frame);
-                    break;
-                case MAT3:
-                    value = valueNode.executePreProMatrix3(frame);
-                    break;
-                case MAT4:
-                    value = valueNode.executePreProMatrix4(frame);
-                    break;
-                case SCAL:
-                    value = valueNode.executePreProScalar(frame);
-                    break;
-                case CONSTANT:
-                    value = valueNode.executePreProConstant(frame);
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + VariableType.getTypeForText(type));
+            if (null == type) {
+                writeToExisting(frame);
+            } else {
+                writeToNew(frame);
             }
-            frame.getFrameDescriptor().setFrameSlotKind(frameSlot, FrameSlotKind.Object);
-            frame.setObject(frameSlot, value);
-        } catch (UnexpectedResultException e) {
+        } catch (UnexpectedResultException | FrameSlotTypeException e) {
             throw PreProException.assignmentError(this, type);
         }
+    }
+
+    private void writeToNew(VirtualFrame frame) throws UnexpectedResultException {
+        TruffleObject value;
+        switch (VariableType.getTypeForText(type)) {
+            case VEC3:
+                value = valueNode.executePreProVector3(frame);
+                break;
+            case VEC4:
+                value = valueNode.executePreProVector4(frame);
+                break;
+            case MAT:
+                value = valueNode.executePreProMatrix(frame);
+                break;
+            case MAT3:
+                value = valueNode.executePreProMatrix3(frame);
+                break;
+            case MAT4:
+                value = valueNode.executePreProMatrix4(frame);
+                break;
+            case SCAL:
+                value = valueNode.executePreProScalar(frame);
+                break;
+            case CONSTANT:
+                value = valueNode.executePreProConstant(frame);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + VariableType.getTypeForText(type));
+        }
+        frame.getFrameDescriptor().setFrameSlotKind(frameSlot, FrameSlotKind.Object);
+        frame.setObject(frameSlot, value);
+    }
+
+    private void writeToExisting(VirtualFrame frame) throws FrameSlotTypeException, UnexpectedResultException {
+        Object value = frame.getObject(frameSlot);
+        switch (VariableType.getTypeForClass(value.getClass())) {
+            case VEC3:
+                value = valueNode.executePreProVector3(frame);
+                break;
+            case VEC4:
+                value = valueNode.executePreProVector4(frame);
+                break;
+            case MAT:
+                value = valueNode.executePreProMatrix(frame);
+                break;
+            case MAT3:
+                value = valueNode.executePreProMatrix3(frame);
+                break;
+            case MAT4:
+                value = valueNode.executePreProMatrix4(frame);
+                break;
+            case SCAL:
+                value = valueNode.executePreProScalar(frame);
+                break;
+            case CONSTANT:
+                value = valueNode.executePreProConstant(frame);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + VariableType.getTypeForClass(value.getClass()));
+        }
+        frame.setObject(frameSlot, value);
     }
 
     FrameSlot getSlot() {
