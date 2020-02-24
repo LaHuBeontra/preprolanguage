@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ExecutePreProFileTest extends PreProAbstractTest {
 
     @Test
-    public void interopWorksSimple() {
+    public void canExecutePreProFile() {
         PreProVector3 p1 = new PreProVector3(Nd4j.create(new double[]{42, 0, 0, 1, 0, 0, 5, 0, 0, 6, 0, 0}, new int[]{4, 3}));
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("p1", p1)
