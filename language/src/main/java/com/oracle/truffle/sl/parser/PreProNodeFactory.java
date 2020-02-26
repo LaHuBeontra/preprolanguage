@@ -382,7 +382,8 @@ public class PreProNodeFactory {
      */
     public PreProWriteLocalVariableNode createAssignment(Token typeToken, PreProExpressionNode nameNode, PreProExpressionNode valueNode, Integer argumentIndex) throws PreProVariableAlreadyDefinedException {
         String name = ((PreProStringLiteralNode) nameNode).executeGeneric(null);
-        if (lexicalScope.locals.containsKey(name)) throw PreProVariableAlreadyDefinedException.variableAlreadyExists(nameNode, name);
+        if (lexicalScope.locals.containsKey(name))
+            throw PreProVariableAlreadyDefinedException.variableAlreadyExists(nameNode, name);
         FrameSlot frameSlot = frameDescriptor.addFrameSlot(
                 name,
                 argumentIndex,
@@ -402,7 +403,8 @@ public class PreProNodeFactory {
 
     public PreProWriteLocalVariableNode createAssignmentToExisting(PreProExpressionNode nameNode, PreProExpressionNode valueNode) throws PreProUndefinedNameException {
         String name = ((PreProStringLiteralNode) nameNode).executeGeneric(null);
-        if (!lexicalScope.locals.containsKey(name)) throw PreProUndefinedNameException.undefinedVariable(nameNode, name);
+        if (!lexicalScope.locals.containsKey(name))
+            throw PreProUndefinedNameException.undefinedVariable(nameNode, name);
         FrameSlot frameSlot = frameDescriptor.findFrameSlot(name);
         final PreProWriteLocalVariableNode result = new PreProWriteLocalVariableNode(frameSlot, valueNode);
 
@@ -418,10 +420,6 @@ public class PreProNodeFactory {
 
     public PreProStatementNode createThrow(String message) {
         return new PreProThrowNode(message);
-    }
-
-    public PreProExpressionNode createExists(PreProExpressionNode nameNode) {
-        return new PreProExistsNode(nameNode);
     }
 
     /**

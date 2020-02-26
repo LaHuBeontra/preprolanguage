@@ -234,9 +234,6 @@ IDENTIFIER                                      { PreProExpressionNode assignmen
     )
 | STRING_LITERAL                    { $result = factory.createStringLiteral($STRING_LITERAL, true); }
 | NUMERIC_LITERAL                   { $result = factory.createNumericLiteral($NUMERIC_LITERAL); }
-| 'exists' '(' IDENTIFIER ')'       { PreProExpressionNode assignmentName = factory.createStringLiteral($IDENTIFIER, false);
-                                      $result = factory.createRead(assignmentName);
-                                      $result = factory.createExists($result); }
 |
     s='('
     expr=arithmetic
