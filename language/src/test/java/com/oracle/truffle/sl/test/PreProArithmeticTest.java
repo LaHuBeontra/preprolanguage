@@ -126,6 +126,18 @@ public class PreProArithmeticTest extends PreProAbstractTest {
     }
 
     @Test
+    public void lazyMulConstants() {
+        PreProConstant c1 = new PreProConstant(Nd4j.create(new double[]{1234567}, new int[]{1, 1}));
+        PreProConstant c2 = new PreProConstant(Nd4j.create(new double[]{69875896}, new int[]{1, 1}));
+        PreProPolyglotContext.PreProPolyglotResult result =
+                context.exportSymbol("c1", c1)
+                        .exportSymbol("c2", c2)
+                        .eval("function main() {export(\"result\", import(\"c1\") ** import(\"c2\"));}");
+        PreProConstant returned = (PreProConstant) result.importSymbol("result");
+        assertEquals(c1.mul(c2), returned);
+    }
+
+    @Test
     public void mulScalars() {
         PreProScalar s1 = new PreProScalar(Nd4j.create(new double[]{1234567}, new int[]{1, 1}));
         PreProScalar s2 = new PreProScalar(Nd4j.create(new double[]{7462}, new int[]{1, 1}));

@@ -46,14 +46,10 @@ import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.nodes.NodeInfo;
 import com.oracle.truffle.sl.PreProException;
 import com.oracle.truffle.sl.nodes.PreProBinaryNode;
-import com.oracle.truffle.sl.nodes.expression.logic.PreProLogicalNotNode;
 import com.oracle.truffle.sl.runtime.types.PreProScalar;
 
 /**
  * PrePro node that performs the "==" operation.
- * <p>
- * Note that we do not need the analogous {@code !=} operator, because we can just
- * {@link PreProLogicalNotNode negate} the {@code ==} operator.
  */
 @NodeInfo(shortName = "==")
 public abstract class PreProEqualNode extends PreProBinaryNode {

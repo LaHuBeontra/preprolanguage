@@ -53,7 +53,6 @@ import com.oracle.truffle.sl.nodes.PreProRootNode;
 import com.oracle.truffle.sl.nodes.PreProStatementNode;
 import com.oracle.truffle.sl.nodes.controlflow.PreProBlockNode;
 import com.oracle.truffle.sl.nodes.controlflow.PreProDebuggerNode;
-import com.oracle.truffle.sl.nodes.controlflow.PreProExistsNode;
 import com.oracle.truffle.sl.nodes.controlflow.PreProFunctionBodyNode;
 import com.oracle.truffle.sl.nodes.controlflow.PreProReturnNode;
 import com.oracle.truffle.sl.nodes.controlflow.PreProThrowNode;
@@ -61,6 +60,8 @@ import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProAddNodeGen;
 import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProCrossProductNodeGen;
 import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProDivNodeGen;
 import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProEqualNodeGen;
+import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProGreaterOrEqualNodeGen;
+import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProGreaterThanNodeGen;
 import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProLazyMultiplicationNode;
 import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProLessOrEqualNodeGen;
 import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProLessThanNodeGen;
@@ -72,7 +73,6 @@ import com.oracle.truffle.sl.nodes.expression.function.PreProParenExpressionNode
 import com.oracle.truffle.sl.nodes.expression.literal.PreProConstantLiteralNode;
 import com.oracle.truffle.sl.nodes.expression.literal.PreProStringLiteralNode;
 import com.oracle.truffle.sl.nodes.expression.logic.PreProLogicalAndNode;
-import com.oracle.truffle.sl.nodes.expression.logic.PreProLogicalNotNodeGen;
 import com.oracle.truffle.sl.nodes.expression.logic.PreProLogicalOrNode;
 import com.oracle.truffle.sl.nodes.local.PreProReadArgumentNode;
 import com.oracle.truffle.sl.nodes.local.PreProReadLocalVariableNode;
@@ -291,16 +291,13 @@ public class PreProNodeFactory {
                 result = PreProLessOrEqualNodeGen.create(leftUnboxed, rightUnboxed);
                 break;
             case ">":
-                result = PreProLogicalNotNodeGen.create(PreProLessOrEqualNodeGen.create(leftUnboxed, rightUnboxed));
+                result = PreProGreaterOrEqualNodeGen.create(leftUnboxed, rightUnboxed);
                 break;
             case ">=":
-                result = PreProLogicalNotNodeGen.create(PreProLessThanNodeGen.create(leftUnboxed, rightUnboxed));
+                result = PreProGreaterThanNodeGen.create(leftUnboxed, rightUnboxed);
                 break;
             case "==":
                 result = PreProEqualNodeGen.create(leftUnboxed, rightUnboxed);
-                break;
-            case "!=":
-                result = PreProLogicalNotNodeGen.create(PreProEqualNodeGen.create(leftUnboxed, rightUnboxed));
                 break;
             case "&&":
                 result = new PreProLogicalAndNode(leftUnboxed, rightUnboxed);
