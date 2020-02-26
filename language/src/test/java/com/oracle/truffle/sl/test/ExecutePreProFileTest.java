@@ -16,7 +16,7 @@ public class ExecutePreProFileTest extends PreProAbstractTest {
         PreProVector3 p1 = new PreProVector3(Nd4j.create(new double[]{42, 0, 0, 1, 0, 0, 5, 0, 0, 6, 0, 0}, new int[]{4, 3}));
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("p1", p1)
-                        .execute(ClassLoader.getSystemResource("polyglotExecutionTest.prepro"));
+                        .eval(ClassLoader.getSystemResource("polyglotExecutionTest.prepro"));
         PreProVector3 returned = (PreProVector3) result.importSymbol("res");
         assertEquals(Nd4j.create(new double[]{1_764, 0, 0, 1, 0, 0, 25, 0, 0, 36, 0, 0}, new int[]{4, 3}), returned.timeSeries());
     }

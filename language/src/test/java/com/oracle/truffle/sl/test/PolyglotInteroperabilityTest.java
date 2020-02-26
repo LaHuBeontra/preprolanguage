@@ -57,7 +57,7 @@ public class PolyglotInteroperabilityTest extends PreProAbstractTest {
         PreProConstant entered = new PreProConstant(Nd4j.create(new double[]{42}, new int[]{1, 1}));
         PreProPolyglotResult result =
                 context.exportSymbol("imported", entered)
-                        .execute("function main() {export(\"exported\", import(\"imported\"));}");
+                        .eval("function main() {export(\"exported\", import(\"imported\"));}");
         PreProConstant returned = (PreProConstant) result.importSymbol("exported");
         assertEquals(entered, returned);
     }
@@ -71,7 +71,7 @@ public class PolyglotInteroperabilityTest extends PreProAbstractTest {
                 context.exportSymbol("vector3One", vector3One)
                         .exportSymbol("vector3Two", vector3Two)
                         .exportSymbol("vector3Three", vector3Three)
-                        .execute("function main() {" +
+                        .eval("function main() {" +
                                 "vec3 p1 = import(\"vector3One\");" +
                                 "vec3 x = calculateDifference(p1, import(\"vector3Two\"));" +
                                 "vec3 s = calculateDifference(p1, import(\"vector3Three\"));" +

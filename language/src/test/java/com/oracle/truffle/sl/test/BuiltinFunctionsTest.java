@@ -54,7 +54,7 @@ public class BuiltinFunctionsTest extends PreProAbstractTest {
     public void printFunctionWorks() {
         PreProVector3 v = new PreProVector3(Nd4j.create(new double[]{42, 54, 6, 2, 311, 543, 3455, 7377, 35, 56, 87686, 35765}, new int[]{4, 3}));
         context.exportSymbol("v", v)
-                .evaluate(ClassLoader.getSystemResource("testPrintFunctionCall.prepro"));
+                .eval(ClassLoader.getSystemResource("testPrintFunctionCall.prepro"));
         assertEquals("Rank: 2,Offset: 0\n" +
                 " Order: c Shape: [4,3],  stride: [3,1]\n" +
                 "Rank: 2,Offset: 0\n" +

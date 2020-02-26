@@ -61,7 +61,7 @@ public class UsePreProTypesTest extends PreProAbstractTest {
         PreProConstant entered = new PreProConstant(Nd4j.create(new double[]{42}, new int[]{1, 1}));
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("imported", entered)
-                        .execute("function main() {export(\"exported\", import(\"imported\"));}");
+                        .eval("function main() {export(\"exported\", import(\"imported\"));}");
         PreProConstant returned = (PreProConstant) result.importSymbol("exported");
         assertEquals(entered, returned);
     }
@@ -71,7 +71,7 @@ public class UsePreProTypesTest extends PreProAbstractTest {
         PreProVector3 entered = new PreProVector3(Nd4j.create(new double[]{42, 0, 1, 1, 0, 1, 5, 0, 1, 6, 0, 1}, new int[]{4, 3}));
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("imported", entered)
-                        .execute("function main() {export(\"exported\", import(\"imported\"));}");
+                        .eval("function main() {export(\"exported\", import(\"imported\"));}");
         PreProVector3 returned = (PreProVector3) result.importSymbol("exported");
         assertEquals(entered, returned);
     }
@@ -81,7 +81,7 @@ public class UsePreProTypesTest extends PreProAbstractTest {
         PreProMatrix3 entered = new PreProMatrix3(Nd4j.create(IntStream.range(1, 36 + 1).mapToDouble(i -> i).toArray(), new int[]{4, 3, 3}));
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("imported", entered)
-                        .execute("function main() {export(\"exported\", import(\"imported\"));}");
+                        .eval("function main() {export(\"exported\", import(\"imported\"));}");
         PreProMatrix3 returned = (PreProMatrix3) result.importSymbol("exported");
         assertEquals(entered, returned);
     }
@@ -91,7 +91,7 @@ public class UsePreProTypesTest extends PreProAbstractTest {
         PreProMatrix4 entered = new PreProMatrix4(Nd4j.create(IntStream.range(1, 64 + 1).mapToDouble(i -> i).toArray(), new int[]{4, 4, 4}));
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("imported", entered)
-                        .execute("function main() {export(\"exported\", import(\"imported\"));}");
+                        .eval("function main() {export(\"exported\", import(\"imported\"));}");
         PreProMatrix4 returned = (PreProMatrix4) result.importSymbol("exported");
         assertEquals(entered, returned);
     }

@@ -15,7 +15,9 @@ public final class PreProPolyglotContext {
     private PreProContext runtimeContext;
 
     public PreProPolyglotContext(ByteArrayOutputStream os) {
-        languageContext = Context.newBuilder().allowPolyglotAccess(PolyglotAccess.ALL).out(os).build();
+        languageContext = Context.newBuilder()
+                .allowPolyglotAccess(PolyglotAccess.ALL)
+                .out(null != os ? os : System.out).build();
         languageContext.initialize(ID);
         languageContext.enter();
         runtimeContext = PreProLanguage.getCurrentContext();
@@ -26,25 +28,13 @@ public final class PreProPolyglotContext {
         return this;
     }
 
-    public PreProPolyglotResult evaluate(String literalPreProProgram) {
+    public PreProPolyglotResult eval(String literalPreProProgram) {
         languageContext.eval(ID, literalPreProProgram);
         return new PreProPolyglotResult();
     }
 
-    public PreProPolyglotResult evaluate(URL preProFileUrl) {
+    public PreProPolyglotResult eval(URL preProFileUrl) {
         languageContext.eval(Source.newBuilder(ID, preProFileUrl).buildLiteral());
-        return new PreProPolyglotResult();
-    }
-
-    public PreProPolyglotResult execute(String literalPreProProgram) {
-        languageContext.eval(ID, literalPreProProgram);
-        languageContext.getBindings(ID).getMember("main").execute();
-        return new PreProPolyglotResult();
-    }
-
-    public PreProPolyglotResult execute(URL preProFileUrl) {
-        languageContext.eval(Source.newBuilder(ID, preProFileUrl).buildLiteral());
-        languageContext.getBindings(ID).getMember("main").execute();
         return new PreProPolyglotResult();
     }
 

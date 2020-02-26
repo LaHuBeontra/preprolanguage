@@ -41,11 +41,9 @@
 package com.oracle.truffle.sl.test;
 
 import com.oracle.truffle.sl.PreProPolyglotContext;
-import com.oracle.truffle.sl.runtime.types.PreProConstant;
 import com.oracle.truffle.sl.runtime.types.PreProVector3;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -61,7 +59,7 @@ public class FunctionCallTest extends PreProAbstractTest {
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("p1", p1)
                         .exportSymbol("p2", p2)
-                        .execute(ClassLoader.getSystemResource("testFunctionCallWithReturn.prepro"));
+                        .eval(ClassLoader.getSystemResource("testFunctionCallWithReturn.prepro"));
         PreProVector3 returned = (PreProVector3) result.importSymbol("result");
         assertEquals(p1.add(p2), returned);
     }
@@ -71,7 +69,7 @@ public class FunctionCallTest extends PreProAbstractTest {
         PreProVector3 p1 = new PreProVector3(Nd4j.create(new double[]{42, 54, 6, 2, 311, 543, 3455, 7377, 35, 56, 87686, 35765}, new int[]{4, 3}));
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("p1", p1)
-                        .execute(ClassLoader.getSystemResource("testMultipleFunctionCalls.prepro"));
+                        .eval(ClassLoader.getSystemResource("testMultipleFunctionCalls.prepro"));
         PreProVector3 returned = (PreProVector3) result.importSymbol("result");
         assertEquals(Nd4j.create(new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, new int[]{4, 3}), returned.timeSeries());
     }
@@ -81,7 +79,7 @@ public class FunctionCallTest extends PreProAbstractTest {
         PreProVector3 p1 = new PreProVector3(Nd4j.create(new double[]{42, 54, 6, 2, 311, 543, 3455, 7377, 35, 56, 87686, 35765}, new int[]{4, 3}));
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("p1", p1)
-                        .execute(ClassLoader.getSystemResource("testMultipleFunctionCalls2.prepro"));
+                        .eval(ClassLoader.getSystemResource("testMultipleFunctionCalls2.prepro"));
         PreProVector3 returned = (PreProVector3) result.importSymbol("result");
         assertEquals(Nd4j.create(new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, new int[]{4, 3}), returned.timeSeries());
     }

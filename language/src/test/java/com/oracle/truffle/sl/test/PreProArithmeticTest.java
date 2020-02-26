@@ -62,7 +62,7 @@ public class PreProArithmeticTest extends PreProAbstractTest {
         PreProConstant c = new PreProConstant(Nd4j.create(new double[]{1234567}, new int[]{1, 1}));
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("c", c)
-                        .execute("function main() {export(\"result\", import(\"c\") + 1234567);}");
+                        .eval("function main() {export(\"result\", import(\"c\") + 1234567);}");
         PreProConstant returned = (PreProConstant) result.importSymbol("result");
         assertEquals(c.add(new PreProConstant(1234567)), returned);
     }
@@ -74,7 +74,7 @@ public class PreProArithmeticTest extends PreProAbstractTest {
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("c1", c1)
                         .exportSymbol("c2", c2)
-                        .execute("function main() {export(\"result\", import(\"c1\") + import(\"c2\"));}");
+                        .eval("function main() {export(\"result\", import(\"c1\") + import(\"c2\"));}");
         PreProConstant returned = (PreProConstant) result.importSymbol("result");
         assertEquals(c1.add(c2), returned);
     }
@@ -84,7 +84,7 @@ public class PreProArithmeticTest extends PreProAbstractTest {
         PreProScalar s1 = new PreProScalar(Nd4j.create(new double[]{1234567}, new int[]{1, 1}));
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("s1", s1)
-                        .execute("function main() {export(\"result\", import(\"s1\") + import(\"s1\") + import(\"s1\"));}");
+                        .eval("function main() {export(\"result\", import(\"s1\") + import(\"s1\") + import(\"s1\"));}");
         PreProScalar returned = (PreProScalar) result.importSymbol("result");
         assertEquals(s1.add(s1).add(s1), returned);
     }
@@ -96,7 +96,7 @@ public class PreProArithmeticTest extends PreProAbstractTest {
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("v1", v1)
                         .exportSymbol("v2", v2)
-                        .execute("function main() {export(\"result\", import(\"v1\") + import(\"v2\"));}");
+                        .eval("function main() {export(\"result\", import(\"v1\") + import(\"v2\"));}");
         PreProVector3 returned = (PreProVector3) result.importSymbol("result");
         assertEquals(v1.add(v2), returned);
     }
@@ -108,7 +108,7 @@ public class PreProArithmeticTest extends PreProAbstractTest {
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("v1", v1)
                         .exportSymbol("v2", v2)
-                        .execute("function main() {export(\"result\", import(\"v1\") - import(\"v2\"));}");
+                        .eval("function main() {export(\"result\", import(\"v1\") - import(\"v2\"));}");
         PreProVector3 returned = (PreProVector3) result.importSymbol("result");
         assertEquals(v1.sub(v2), returned);
     }
@@ -120,7 +120,7 @@ public class PreProArithmeticTest extends PreProAbstractTest {
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("m1", m1)
                         .exportSymbol("m2", m2)
-                        .execute("function main() {export(\"result\", import(\"m1\") + import(\"m2\"));}");
+                        .eval("function main() {export(\"result\", import(\"m1\") + import(\"m2\"));}");
         PreProMatrix4 returned = (PreProMatrix4) result.importSymbol("result");
         assertEquals(m1.add(m2), returned);
     }
@@ -134,7 +134,7 @@ public class PreProArithmeticTest extends PreProAbstractTest {
                 context.exportSymbol("s1", s1)
                         .exportSymbol("s2", s2)
                         .exportSymbol("s3", s3)
-                        .execute("function main() {export(\"result\", import(\"s1\") * import(\"s2\") * import(\"s3\"));}");
+                        .eval("function main() {export(\"result\", import(\"s1\") * import(\"s2\") * import(\"s3\"));}");
         PreProScalar returned = (PreProScalar) result.importSymbol("result");
         assertEquals(s1.mul(s2).mul(s3), returned);
     }
@@ -148,7 +148,7 @@ public class PreProArithmeticTest extends PreProAbstractTest {
                 context.exportSymbol("s1", s1)
                         .exportSymbol("s2", s2)
                         .exportSymbol("s3", s3)
-                        .execute("function main() {export(\"result\", import(\"s1\") / import(\"s2\") / import(\"s3\"));}");
+                        .eval("function main() {export(\"result\", import(\"s1\") / import(\"s2\") / import(\"s3\"));}");
         PreProScalar returned = (PreProScalar) result.importSymbol("result");
         assertEquals(s1.div(s2).div(s3), returned);
     }
@@ -160,7 +160,7 @@ public class PreProArithmeticTest extends PreProAbstractTest {
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("m1", m1)
                         .exportSymbol("m2", m2)
-                        .execute("function main() {export(\"result\", import(\"m1\") * import(\"m2\"));}");
+                        .eval("function main() {export(\"result\", import(\"m1\") * import(\"m2\"));}");
         PreProMatrix3 returned = (PreProMatrix3) result.importSymbol("result");
         assertEquals(m1.mul(m2), returned);
     }
@@ -172,7 +172,7 @@ public class PreProArithmeticTest extends PreProAbstractTest {
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("m", m)
                         .exportSymbol("s", s)
-                        .execute("function main() {export(\"result\", import(\"m\") * import(\"s\"));}");
+                        .eval("function main() {export(\"result\", import(\"m\") * import(\"s\"));}");
         PreProMatrix3 returned = (PreProMatrix3) result.importSymbol("result");
         assertEquals(m.mul(s), returned);
     }
@@ -184,7 +184,7 @@ public class PreProArithmeticTest extends PreProAbstractTest {
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("m", m)
                         .exportSymbol("v", v)
-                        .execute("function main() {export(\"result\", import(\"m\") * import(\"v\"));}");
+                        .eval("function main() {export(\"result\", import(\"m\") * import(\"v\"));}");
         PreProVector3 returned = (PreProVector3) result.importSymbol("result");
         assertEquals(m.mul(v), returned);
     }
@@ -196,7 +196,7 @@ public class PreProArithmeticTest extends PreProAbstractTest {
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("m1", m1)
                         .exportSymbol("m2", m2)
-                        .execute("function main() {export(\"result\", import(\"m1\") * import(\"m2\"));}");
+                        .eval("function main() {export(\"result\", import(\"m1\") * import(\"m2\"));}");
         PreProMatrix4 returned = (PreProMatrix4) result.importSymbol("result");
         assertEquals(m1.mul(m2), returned);
     }
@@ -208,7 +208,7 @@ public class PreProArithmeticTest extends PreProAbstractTest {
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("v1", v1)
                         .exportSymbol("v2", v2)
-                        .execute("function main() {export(\"result\", import(\"v1\") * import(\"v2\"));}");
+                        .eval("function main() {export(\"result\", import(\"v1\") * import(\"v2\"));}");
         PreProVector3 returned = (PreProVector3) result.importSymbol("result");
         assertEquals(v1.mul(v2), returned);
     }
@@ -220,7 +220,7 @@ public class PreProArithmeticTest extends PreProAbstractTest {
         PreProPolyglotContext.PreProPolyglotResult result =
                 context.exportSymbol("v", v)
                         .exportSymbol("s", s)
-                        .execute("function main() {export(\"result\", import(\"v\") * import(\"s\"));}");
+                        .eval("function main() {export(\"result\", import(\"v\") * import(\"s\"));}");
         PreProVector3 returned = (PreProVector3) result.importSymbol("result");
         assertEquals(v.mul(s), returned);
     }
