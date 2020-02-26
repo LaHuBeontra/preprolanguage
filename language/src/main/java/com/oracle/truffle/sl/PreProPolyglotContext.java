@@ -5,6 +5,7 @@ import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotAccess;
 import org.graalvm.polyglot.Source;
 
+import java.io.ByteArrayOutputStream;
 import java.net.URL;
 
 public final class PreProPolyglotContext {
@@ -13,8 +14,8 @@ public final class PreProPolyglotContext {
     private Context languageContext;
     private PreProContext runtimeContext;
 
-    public PreProPolyglotContext() {
-        languageContext = Context.newBuilder().allowPolyglotAccess(PolyglotAccess.ALL).build();
+    public PreProPolyglotContext(ByteArrayOutputStream os) {
+        languageContext = Context.newBuilder().allowPolyglotAccess(PolyglotAccess.ALL).out(os).build();
         languageContext.initialize(ID);
         languageContext.enter();
         runtimeContext = PreProLanguage.getCurrentContext();
@@ -23,6 +24,16 @@ public final class PreProPolyglotContext {
     public PreProPolyglotContext exportSymbol(String symbolName, Object value) {
         runtimeContext.exportSymbol(symbolName, value);
         return this;
+    }
+
+    public PreProPolyglotResult evaluate(String literalPreProProgram) {
+        languageContext.eval(ID, literalPreProProgram);
+        return new PreProPolyglotResult();
+    }
+
+    public PreProPolyglotResult evaluate(URL preProFileUrl) {
+        languageContext.eval(Source.newBuilder(ID, preProFileUrl).buildLiteral());
+        return new PreProPolyglotResult();
     }
 
     public PreProPolyglotResult execute(String literalPreProProgram) {

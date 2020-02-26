@@ -40,40 +40,25 @@
  */
 package com.oracle.truffle.sl.test;
 
-import com.oracle.truffle.sl.PreProPolyglotContext;
-import com.oracle.truffle.sl.runtime.types.PreProConstant;
+import com.oracle.truffle.sl.runtime.types.PreProVector3;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-@DisplayName("Tests for PrePro Addition")
-public class ConstantAdditionTest extends PreProAbstractTest {
-
-    @Test
-    public void increment3() {
-        INDArray constant = Nd4j.create(new double[]{3}, new int[]{1, 1});
-        PreProConstant entered = new PreProConstant(constant);
-        PreProPolyglotContext.PreProPolyglotResult result =
-                context.exportSymbol("imported", entered)
-                        .execute("function main() {export(\"exported\", import(\"imported\") + 1);}");
-        PreProConstant returned = (PreProConstant) result.importSymbol("exported");
-        assertNotEquals(entered, returned);
-        assertEquals(constant.add(1), returned.timeSeries());
-    }
+@DisplayName("Tests for PrePro builtin functions")
+public class BuiltinFunctionsTest extends PreProAbstractTest {
 
     @Test
-    public void increment1234567() {
-        INDArray constant = Nd4j.create(new double[]{1234567}, new int[]{1, 1});
-        PreProConstant entered = new PreProConstant(constant);
-        PreProPolyglotContext.PreProPolyglotResult result =
-                context.exportSymbol("imported", entered)
-                        .execute("function main() {export(\"exported\", import(\"imported\") + 1);}");
-        PreProConstant returned = (PreProConstant) result.importSymbol("exported");
-        assertNotEquals(entered, returned);
-        assertEquals(constant.add(1), returned.timeSeries());
+    public void printFunctionWorks() {
+        PreProVector3 v = new PreProVector3(Nd4j.create(new double[]{42, 54, 6, 2, 311, 543, 3455, 7377, 35, 56, 87686, 35765}, new int[]{4, 3}));
+        context.exportSymbol("v", v)
+                .evaluate(ClassLoader.getSystemResource("testPrintFunctionCall.prepro"));
+        assertEquals("Rank: 2,Offset: 0\n" +
+                " Order: c Shape: [4,3],  stride: [3,1]\n" +
+                "Rank: 2,Offset: 0\n" +
+                " Order: c Shape: [1,1],  stride: [1,1]\n" +
+                "Lol epic printing\n", toUnixString());
     }
 }
