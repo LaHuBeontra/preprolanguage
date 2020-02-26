@@ -14,10 +14,10 @@ public final class PreProPolyglotContext {
     private Context languageContext;
     private PreProContext runtimeContext;
 
-    public PreProPolyglotContext(ByteArrayOutputStream os) {
+    public PreProPolyglotContext(ByteArrayOutputStream printOut) {
         languageContext = Context.newBuilder()
                 .allowPolyglotAccess(PolyglotAccess.ALL)
-                .out(null != os ? os : System.out).build();
+                .out(null != printOut ? printOut : System.out).build();
         languageContext.initialize(ID);
         languageContext.enter();
         runtimeContext = PreProLanguage.getCurrentContext();
