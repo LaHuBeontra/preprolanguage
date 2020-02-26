@@ -21,7 +21,7 @@ public class PreProMatrix3 extends PreProMatrix implements TruffleObject {
 
     @TruffleBoundary
     public PreProMatrix3 mul(PreProScalar right) {
-        return new PreProMatrix3(multiplyMatrixWithScalar(this, right, 3));
+        return new PreProMatrix3(this.timeSeries().mul(right.timeSeries().getScalar(0)));
     }
 
     @TruffleBoundary

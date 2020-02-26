@@ -50,23 +50,6 @@ public class PreProMatrix implements TruffleObject {
         return result;
     }
 
-    INDArray multiplyMatrixWithScalar(PreProMatrix left, PreProScalar right, int dimension) {
-        INDArray result = Nd4j.create(left.amountTimeElements(), dimension, dimension);
-        return multiplyValues(left.timeSeries(), right.timeSeries(), left.amountTimeElements(), result);
-    }
-
-    private INDArray multiplyValues(INDArray left, INDArray right, int amountTimeElements, INDArray result) {
-        for (int i = 0; i < amountTimeElements; i++) {
-            INDArray leftValue = left.getRow(i);
-            double rightValue = right.getDouble(i);
-
-            INDArray value = leftValue.mul(rightValue);
-            result.putRow(i, value);
-        }
-
-        return result;
-    }
-
     @Override
     @TruffleBoundary
     public String toString() {
