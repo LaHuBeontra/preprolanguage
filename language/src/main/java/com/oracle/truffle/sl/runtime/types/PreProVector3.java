@@ -31,7 +31,7 @@ public class PreProVector3 extends PreProVector implements TruffleObject {
 
     @TruffleBoundary
     public PreProVector3 mul(PreProScalar right) {
-        return new PreProVector3(multiplyVectorWithScalar(this, right, 3));
+        return new PreProVector3(this.timeSeries().mul(right.timeSeries().getScalar(0)));
     }
 
     @TruffleBoundary

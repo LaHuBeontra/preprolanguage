@@ -5,7 +5,6 @@ import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.library.ExportLibrary;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Nd4j;
 
 import java.util.Objects;
 
@@ -27,23 +26,6 @@ public class PreProVector implements TruffleObject {
 
     public int amountTimeElements() {
         return ndArray.shape()[0];
-    }
-
-    INDArray multiplyVectorWithScalar(PreProVector left, PreProScalar right, int dimension) {
-        INDArray result = Nd4j.create(left.amountTimeElements(), dimension);
-        return multiplyValues(left.timeSeries(), right.timeSeries(), left.amountTimeElements(), result);
-    }
-
-    private INDArray multiplyValues(INDArray left, INDArray right, int amountTimeElements, INDArray result) {
-        for (int i = 0; i < amountTimeElements; i++) {
-            INDArray leftValue = left.getRow(i);
-            double rightValue = right.getDouble(i);
-
-            INDArray value = leftValue.mul(rightValue);
-            result.putRow(i, value);
-        }
-
-        return result;
     }
 
     @Override
