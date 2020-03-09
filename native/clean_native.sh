@@ -1,3 +1,3 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-[ -f slnative ] && rm slnative || echo "slnative not found."
+[ -f prepronative ] && rm prepronative || echo "prepronative not found."
