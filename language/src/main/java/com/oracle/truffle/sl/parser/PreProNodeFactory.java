@@ -55,7 +55,6 @@ import com.oracle.truffle.sl.nodes.controlflow.PreProBlockNode;
 import com.oracle.truffle.sl.nodes.controlflow.PreProDebuggerNode;
 import com.oracle.truffle.sl.nodes.controlflow.PreProFunctionBodyNode;
 import com.oracle.truffle.sl.nodes.controlflow.PreProReturnNode;
-import com.oracle.truffle.sl.nodes.controlflow.PreProThrowNode;
 import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProAddNodeGen;
 import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProCrossProductNodeGen;
 import com.oracle.truffle.sl.nodes.expression.arithmetic.PreProDivNodeGen;
@@ -409,10 +408,6 @@ public class PreProNodeFactory {
         result.addStatementTag();
 
         return result;
-    }
-
-    public PreProStatementNode createThrow(String message) {
-        return new PreProThrowNode(message);
     }
 
     /**

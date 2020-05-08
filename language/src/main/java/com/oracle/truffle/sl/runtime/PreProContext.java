@@ -61,6 +61,7 @@ import com.oracle.truffle.sl.builtins.PreProExportBuiltinFactory;
 import com.oracle.truffle.sl.builtins.PreProImportBuiltinFactory;
 import com.oracle.truffle.sl.builtins.PreProPrintBuiltin;
 import com.oracle.truffle.sl.builtins.PreProPrintBuiltinFactory;
+import com.oracle.truffle.sl.builtins.PreProThrowBuiltinFactory;
 import com.oracle.truffle.sl.nodes.PreProExpressionNode;
 import com.oracle.truffle.sl.nodes.PreProRootNode;
 import com.oracle.truffle.sl.nodes.local.PreProReadArgumentNode;
@@ -140,6 +141,7 @@ public final class PreProContext {
      */
     private void installBuiltins() {
         installBuiltin(PreProPrintBuiltinFactory.getInstance());
+        installBuiltin(PreProThrowBuiltinFactory.getInstance());
         installBuiltin(PreProImportBuiltinFactory.getInstance());
         installBuiltin(PreProExportBuiltinFactory.getInstance());
     }

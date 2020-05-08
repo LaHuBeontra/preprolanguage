@@ -41,11 +41,13 @@
 package com.oracle.truffle.sl.test;
 
 import com.oracle.truffle.sl.runtime.types.PreProVector3;
+import org.graalvm.polyglot.PolyglotException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.nd4j.linalg.factory.Nd4j;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Tests for PrePro builtin functions")
 public class BuiltinFunctionsTest extends PreProAbstractTest {
@@ -59,6 +61,17 @@ public class BuiltinFunctionsTest extends PreProAbstractTest {
                 " Order: c Shape: [4,3],  stride: [3,1]\n" +
                 "Rank: 2,Offset: 0\n" +
                 " Order: c Shape: [1,1],  stride: [1,1]\n" +
-                "Lol epic printing\n", toUnixString());
+                "This is a message printed from within PrePro!\n", toUnixString());
+    }
+
+    @Test
+    public void throwFunctionWorks() {
+        Exception preproException = assertThrows(PolyglotException.class,
+                () -> context.eval(ClassLoader.getSystemResource("testThrowFunctionCall.prepro")));
+
+        String expectedMessage = "This is an exception thrown from within PrePro!";
+        String actualMessage = preproException.getMessage();
+
+        assertEquals(actualMessage, expectedMessage);
     }
 }

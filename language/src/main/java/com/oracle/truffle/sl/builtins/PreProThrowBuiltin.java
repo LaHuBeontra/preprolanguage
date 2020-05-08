@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2019, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * The Universal Permissive License (UPL), Version 1.0
@@ -38,37 +38,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.oracle.truffle.sl.nodes.controlflow;
+package com.oracle.truffle.sl.builtins;
 
-import com.oracle.truffle.api.debug.DebuggerTags;
-import com.oracle.truffle.api.frame.VirtualFrame;
-import com.oracle.truffle.api.instrumentation.Tag;
+import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.nodes.NodeInfo;
 import com.oracle.truffle.sl.PreProException;
-import com.oracle.truffle.sl.nodes.PreProStatementNode;
 
 /**
- * Implementation of the PrePro throw statement.
+ * Builtin function to throw an exception from within PrePro.
  */
-@NodeInfo(shortName = "throw", description = "The node implementing a throw statement")
-public class PreProThrowNode extends PreProStatementNode {
+@NodeInfo(shortName = "throw")
+public abstract class PreProThrowBuiltin extends PreProBuiltinNode {
 
-    private String message;
-
-    public PreProThrowNode(String message) {
-        this.message = message;
-    }
-
-    @Override
-    public void executeVoid(VirtualFrame frame) {
-        throw PreProException.throW(this, message);
-    }
-
-    @Override
-    public boolean hasTag(Class<? extends Tag> tag) {
-        if (tag == DebuggerTags.AlwaysHalt.class) {
-            return true;
-        }
-        return super.hasTag(tag);
+    @Specialization
+    public String throW(String value) {
+        throw PreProException.throW(this, value);
     }
 }

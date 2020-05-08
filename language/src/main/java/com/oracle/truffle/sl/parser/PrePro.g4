@@ -180,8 +180,6 @@ statement returns [PreProStatementNode result]
     assignment ';'                              { $result = $assignment.result; }
 |
     arithmetic ';'                              { $result = $arithmetic.result; }
-|
-    throwStatement ';'                            { $result = $throwStatement.result; }
 |   
     d='debugger'                                { $result = factory.createDebugger($d); }
     ';'
@@ -194,13 +192,6 @@ IDENTIFIER                        { PreProExpressionNode assignmentName = factor
 '='
 (
 arithmetic                        { $result = factory.createAssignment($TYPE, assignmentName, $arithmetic.result); }
-)
-;
-
-throwStatement returns [PreProStatementNode result]:
-'throw'
-(
-    STRING_LITERAL                { $result = factory.createThrow($STRING_LITERAL.text.substring(1, $STRING_LITERAL.text.length() - 1)); } //cut off leading and trailing "
 )
 ;
 

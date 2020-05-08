@@ -4,5 +4,5 @@ function main() {
 
     print(v);
     print(c);
-    print("Lol epic printing");
+    print("This is a message printed from within PrePro!");
 }
