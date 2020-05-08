@@ -123,7 +123,6 @@ public class PreProNodeFactory {
     private int functionBodyStartPos; // includes parameter list
     private int parameterCount;
     private Token returnType;
-    private List<Object> parameters;
     private FrameDescriptor frameDescriptor;
     private List<PreProStatementNode> methodNodes;
 
@@ -148,7 +147,6 @@ public class PreProNodeFactory {
         assert parameterCount == 0;
         assert frameDescriptor == null;
         assert lexicalScope == null;
-        assert parameters == null;
         assert returnType == null;
 
         functionStartPos = nameToken.getStartIndex();
@@ -156,7 +154,6 @@ public class PreProNodeFactory {
         functionBodyStartPos = bodyStartToken.getStartIndex();
         frameDescriptor = new FrameDescriptor();
         methodNodes = new ArrayList<>();
-        parameters = new ArrayList<>();
 
         startBlock();
     }
@@ -189,7 +186,6 @@ public class PreProNodeFactory {
         parameterCount = 0;
         frameDescriptor = null;
         lexicalScope = null;
-        parameters = null;
         returnType = null;
     }
 
@@ -482,53 +478,6 @@ public class PreProNodeFactory {
         result.setSourceSection(start, length);
         return result;
     }
-
-//    /**
-//     * Returns an {@link PreProReadPropertyNode} for the given parameters.
-//     *
-//     * @param receiverNode The receiver of the property access
-//     * @param nameNode     The name of the property being accessed
-//     * @return An SLExpressionNode for the given parameters. null if receiverNode or nameNode is
-//     * null.
-//     */
-//    public PreProExpressionNode createReadProperty(PreProExpressionNode receiverNode, PreProExpressionNode nameNode) {
-//        if (receiverNode == null || nameNode == null) {
-//            return null;
-//        }
-//
-//        final PreProExpressionNode result = PreProReadPropertyNodeGen.create(receiverNode, nameNode);
-//
-//        final int startPos = receiverNode.getSourceCharIndex();
-//        final int endPos = nameNode.getSourceEndIndex();
-//        result.setSourceSection(startPos, endPos - startPos);
-//        result.addExpressionTag();
-//
-//        return result;
-//    }
-//
-//    /**
-//     * Returns an {@link PreProWritePropertyNode} for the given parameters.
-//     *
-//     * @param receiverNode The receiver object of the property assignment
-//     * @param nameNode     The name of the property being assigned
-//     * @param valueNode    The value to be assigned
-//     * @return An SLExpressionNode for the given parameters. null if receiverNode, nameNode or
-//     * valueNode is null.
-//     */
-//    public PreProExpressionNode createWriteProperty(PreProExpressionNode receiverNode, PreProExpressionNode nameNode, PreProExpressionNode valueNode) {
-//        if (receiverNode == null || nameNode == null || valueNode == null) {
-//            return null;
-//        }
-//
-//        final PreProExpressionNode result = PreProWritePropertyNodeGen.create(receiverNode, nameNode, valueNode);
-//
-//        final int start = receiverNode.getSourceCharIndex();
-//        final int length = valueNode.getSourceEndIndex() - start;
-//        result.setSourceSection(start, length);
-//        result.addExpressionTag();
-//
-//        return result;
-//    }
 
     /**
      * Creates source description of a single token.
