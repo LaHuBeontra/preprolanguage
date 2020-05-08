@@ -6,6 +6,7 @@ import org.graalvm.polyglot.PolyglotAccess;
 import org.graalvm.polyglot.Source;
 
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.net.URL;
 
 public final class PreProPolyglotContext {
@@ -14,7 +15,7 @@ public final class PreProPolyglotContext {
     private Context languageContext;
     private PreProContext runtimeContext;
 
-    public PreProPolyglotContext(ByteArrayOutputStream printOut) {
+    public PreProPolyglotContext(OutputStream printOut) {
         languageContext = Context.newBuilder()
                 .allowPolyglotAccess(PolyglotAccess.ALL)
                 .out(null != printOut ? printOut : System.out).build();

@@ -5,13 +5,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public abstract class PreProAbstractTest {
 
     PreProPolyglotContext context;
-    private ByteArrayOutputStream os;
+    private OutputStream os;
 
     @BeforeEach
     void setUp() {
@@ -28,6 +29,6 @@ public abstract class PreProAbstractTest {
      * Converts a {@link ByteArrayOutputStream} content into UTF-8 String with UNIX line ends.
      */
     String toUnixString() {
-        return os.toString(UTF_8).replace("\r\n", "\n");
+        return ((ByteArrayOutputStream) os).toString(UTF_8).replace("\r\n", "\n");
     }
 }
