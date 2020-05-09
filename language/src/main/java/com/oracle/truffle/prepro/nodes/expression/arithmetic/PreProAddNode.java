@@ -134,29 +134,6 @@ public abstract class PreProAddNode extends PreProBinaryNode {
         return left.add(right);
     }
 
-    //TODO: Do we need these guard checks on all the methods above?
-//    /**
-//     * Specialization for String concatenation. The SL specification says that String concatenation
-//     * works if either the left or the right operand is a String. The non-string operand is
-//     * converted then automatically converted to a String.
-//     * <p>
-//     * To implement these semantics, we tell the Truffle DSL to use a custom guard. The guard
-//     * function is defined in {@link #isString this class}, but could also be in any superclass.
-//     */
-//    @Specialization(guards = "isString(left, right)")
-//    @TruffleBoundary
-//    protected String add(Object left, Object right) {
-//        return left.toString() + right.toString();
-//    }
-//
-//    /**
-//     * Guard for String concatenation: returns true if either the left or the right operand is a
-//     * {@link String}.
-//     */
-//    protected boolean isString(Object a, Object b) {
-//        return a instanceof String || b instanceof String;
-//    }
-
     @Fallback
     protected Object typeError(Object left, Object right) {
         throw PreProException.typeError(this, left, right);
