@@ -2,7 +2,7 @@
 
 VERSION="20.0.0"
 
-MAIN_CLASS="com.oracle.truffle.sl.launcher.PreProMain"
+MAIN_CLASS="com.oracle.truffle.prepro.launcher.PreProMain"
 SCRIPT_HOME="$(cd "$(dirname "$0")" && pwd -P)"
 
 #######################################################################
@@ -13,7 +13,7 @@ GRAALVM_VERSION=$(grep "GRAALVM_VERSION" "$SCRIPT_HOME/../release" 2> /dev/null)
 if [[ "$GRAALVM_VERSION" != "" ]]; then
     LANGUAGE_PATH=""
     # contains paths for both jdk8 and jdk11
-    LAUNCHER_PATH="$SCRIPT_HOME/../jre/languages/sl/launcher/prepro-launcher.jar:$SCRIPT_HOME/../languages/sl/launcher/prepro-launcher.jar"
+    LAUNCHER_PATH="$SCRIPT_HOME/../jre/languages/prepro/launcher/prepro-launcher.jar:$SCRIPT_HOME/../languages/prepro/launcher/prepro-launcher.jar"
     JAVACMD="$SCRIPT_HOME/java"
     GRAALVM_VERSION=$(echo "$GRAALVM_VERSION" | awk 'BEGIN {FS="="} {print $2}')
     if [[ "$GRAALVM_VERSION" != "$VERSION" ]]; then
